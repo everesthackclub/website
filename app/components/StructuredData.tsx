@@ -6,7 +6,7 @@ export default function StructuredData() {
     alternateName: 'Everest Hack Club Biratnagar',
     description: 'Student-led coding and technology community in Biratnagar, Nepal',
     url: 'https://everesthackclub.com',
-    logo: 'https://everesthackclub.com/Image/icon-rounded.svg',
+    logo: 'https://everesthackclub.com/Image/logo2.svg',
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Biratnagar',

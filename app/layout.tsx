@@ -48,8 +48,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
       <head>
-        <link rel="icon" href="/Image/icon-rounded.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/Image/icon-rounded.svg" />
         <meta name="theme-color" content="#ffffff" />
         <meta name="geo.region" content="NP-2" />
         <meta name="geo.placename" content="Biratnagar" />

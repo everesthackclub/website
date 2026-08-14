@@ -83,8 +83,8 @@ export default function Home() {
                   <Image
                     src="/Image/flag-orpheus-top.svg"
                     alt="Hack Club Flag"
-                    width={350}
-                    height={350}
+                    width={400}
+                    height={400}
                     priority
                     className="drop-shadow-2xl"
                   />
@@ -104,13 +104,55 @@ export default function Home() {
                 <Image
                   src="/Image/flag-orpheus-top.svg"
                   alt="Hack Club Flag"
-                  width={180}
-                  height={180}
+                  width={220}
+                  height={220}
                   priority
                   className="drop-shadow-2xl"
                 />
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Partnership Badge Section */}
+      <section className="relative px-6 py-16 border-t border-gray-200 bg-gray-50/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col items-center justify-center gap-8">
+            <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">
+              Officially Partnered With
+            </p>
+            <div className="flex items-center gap-8 md:gap-12">
+              {/* Our Logo */}
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/Image/logo2.svg"
+                  alt="Everest Hack Club"
+                  width={50}
+                  height={50}
+                  className="opacity-90"
+                />
+                <span className="text-xl font-bold text-gray-800">Everest Hack Club</span>
+              </div>
+
+              {/* X Symbol */}
+              <div className="text-3xl text-gray-400 font-light">×</div>
+
+              {/* Hack Club Logo */}
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/Image/flag-standalone.svg"
+                  alt="Hack Club"
+                  width={50}
+                  height={50}
+                  className="opacity-90"
+                />
+                <span className="text-xl font-bold text-gray-800">Hack Club</span>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 text-center max-w-md">
+              An official chapter of Hack Club, the global network of high school makers and coding communities.
+            </p>
           </div>
         </div>
       </section>
@@ -244,7 +286,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-3">
             <Image
-              src="/Image/icon-rounded.svg"
+              src="/Image/logo2.svg"
               alt="Hack Club Icon"
               width={40}
               height={40}

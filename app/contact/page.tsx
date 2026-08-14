@@ -24,10 +24,10 @@ export default function Contact() {
           <div className="text-center mb-16">
             <div className="flex justify-center mb-6">
               <Image
-                src="/Image/flag-standalone.svg"
-                alt="Hack Club"
-                width={80}
-                height={80}
+                src="/Image/logo2.svg"
+                alt="Everest Hack Club"
+                width={100}
+                height={100}
                 className="opacity-80"
               />
             </div>

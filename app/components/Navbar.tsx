@@ -13,13 +13,15 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <Image
-              src="/Image/icon-rounded.svg"
-              alt="Everest Hack Club"
-              width={40}
-              height={40}
-              className="group-hover:scale-110 transition-transform"
-            />
+            <div className="w-10 h-10 flex items-center justify-center">
+              <Image
+                src="/Image/logo2.svg"
+                alt="Everest Hack Club"
+                width={40}
+                height={40}
+                className="group-hover:scale-110 transition-transform object-contain"
+              />
+            </div>
             <span className="font-bold text-xl text-black">
               Everest <span className="text-red-600">Hack Club</span>
             </span>
