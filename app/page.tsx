@@ -7,90 +7,108 @@ export default function Home() {
       <Navbar />
 
       {/* Dotted Background Pattern */}
-      <div className="fixed inset-0 -z-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
+
       
       {/* Grid Lines Background */}
       <div className="fixed inset-0 -z-10 bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] [background-size:64px_64px] opacity-30" />
 
-      {/* Gradient Orbs */}
-      <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-red-100 rounded-full blur-3xl opacity-20 -z-10" />
-      <div className="fixed bottom-0 left-0 w-[500px] h-[500px] bg-blue-100 rounded-full blur-3xl opacity-20 -z-10" />
 
       {/* Hero Section */}
-      <section className="relative px-6 pt-32 pb-20 md:pt-48 md:pb-32">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+      <section className="relative px-6 pt-24 pb-32 md:pt-32 md:pb-48 min-h-screen flex items-center">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
-            <div className="text-left">
+            <div>
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 border border-red-100 text-red-600 text-sm font-medium mb-8">
-                <span className="relative flex h-2 w-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 border border-red-100 text-red-600 text-xs font-medium mb-8">
+                <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
                 </span>
                 Biratnagar, Nepal
               </div>
 
               {/* Main Heading */}
-              <h1 className="text-6xl md:text-7xl font-bold text-black mb-6 tracking-tight leading-tight">
-                <span className="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-                  Everest
-                </span>
+              <h1 className="text-6xl md:text-7xl xl:text-8xl font-bold mb-6 leading-none tracking-tight">
+                <span className="text-black">Everest</span>
                 <br />
-                Hack Club
+                <span className="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+                  Hack Club
+                </span>
               </h1>
 
               {/* Tagline */}
-              <p className="text-3xl md:text-4xl text-gray-800 mb-4 font-bold">
-                Build. Break. Learn.
-              </p>
+              <div className="mb-8">
+                <p className="text-3xl md:text-4xl font-bold text-gray-900">
+                  Build. Break. Learn.
+                </p>
+              </div>
 
-              {/* Subheading */}
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-lg">
-                A student-led community where young makers build projects, experiment with code, and learn together.
+              {/* Description */}
+              <p className="text-xl text-gray-600 mb-10 leading-relaxed max-w-xl">
+                A student-led community of makers building projects and learning together. Whether you're a beginner or experienced, join us.
               </p>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-wrap gap-4">
                 <a
                   href="https://wa.me/9779709154661"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group px-8 py-4 bg-black text-white rounded-full font-semibold text-lg hover:bg-gray-900 transition-all shadow-lg hover:shadow-2xl transform hover:scale-105 flex items-center justify-center gap-2"
+                  className="group px-8 py-4 bg-black text-white rounded-lg font-semibold text-base hover:bg-gray-900 transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
                 >
-                  Join Us Now
+                  Join via WhatsApp
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </a>
                 <a
-                  href="#about"
-                  className="px-8 py-4 bg-white text-black border border-gray-300 rounded-full font-semibold text-lg hover:border-gray-400 hover:bg-gray-50 transition-all flex items-center justify-center"
+                  href="https://discord.gg/PxQzVuu4M"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group px-8 py-4 bg-indigo-600 text-white rounded-lg font-semibold text-base hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
                 >
-                  Learn More
+                  Join Discord
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </a>
               </div>
             </div>
 
             {/* Right Visual */}
-            <div className="relative">
-              <div className="relative aspect-square">
-                {/* Decorative Elements */}
-                <div className="absolute inset-0 bg-gradient-to-br from-red-100 to-blue-100 rounded-3xl blur-2xl opacity-40 animate-pulse"></div>
+            <div className="relative lg:block hidden">
+              <div className="relative w-full aspect-square max-w-xl mx-auto">
+                {/* Background Gradient Blob */}
+                <div className="absolute inset-0 bg-gradient-to-br from-red-100 via-purple-50 to-blue-100 rounded-full blur-3xl opacity-60"></div>
                 
-                {/* Main Flag */}
+                {/* Flag Image */}
                 <div className="relative z-10 flex items-center justify-center h-full animate-[float_3s_ease-in-out_infinite]">
                   <Image
                     src="/Image/flag-orpheus-top.svg"
                     alt="Hack Club Flag"
-                    width={280}
-                    height={280}
+                    width={350}
+                    height={350}
                     priority
                     className="drop-shadow-2xl"
                   />
                 </div>
 
-                {/* Floating Elements */}
-                <div className="absolute top-10 right-10 w-16 h-16 bg-red-500 rounded-full blur-xl opacity-30 animate-pulse"></div>
-                <div className="absolute bottom-10 left-10 w-20 h-20 bg-blue-500 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                {/* Decorative Grid Overlay */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] [background-size:40px_40px] opacity-20 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Flag (visible only on mobile) */}
+          <div className="lg:hidden mt-16 flex justify-center">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-red-200 to-blue-200 rounded-full blur-2xl opacity-40"></div>
+              <div className="relative animate-[float_3s_ease-in-out_infinite]">
+                <Image
+                  src="/Image/flag-orpheus-top.svg"
+                  alt="Hack Club Flag"
+                  width={180}
+                  height={180}
+                  priority
+                  className="drop-shadow-2xl"
+                />
               </div>
             </div>
           </div>
@@ -99,6 +117,7 @@ export default function Home() {
 
       {/* Stats Section */}
       <section className="px-6 py-16">
+              <div className="fixed inset-0 -z-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="group p-8 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200 hover:border-gray-300 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -147,7 +166,7 @@ export default function Home() {
                 Whether you're coding your first website or building complex projects, we provide the space, resources, and community to help you grow.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                No experience required—just bring your curiosity and passion to create.
+                No experience required. Just bring your curiosity and passion to create.
               </p>
             </div>
 
@@ -183,7 +202,7 @@ export default function Home() {
                 <span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="mt-4 text-gray-600 leading-relaxed">
-                Any student passionate about technology, coding, and building projects! No prior experience is required—just bring your enthusiasm to learn.
+                Any student passionate about technology, coding, and building projects! No prior experience is required. Just bring your enthusiasm to learn.
               </p>
             </details>
 
@@ -203,7 +222,7 @@ export default function Home() {
                 <span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
               </summary>
               <p className="mt-4 text-gray-600 leading-relaxed">
-                Anything you can imagine! Websites, apps, games, hardware projects, art installations—if you can dream it, we'll help you build it.
+                Anything you can imagine! Websites, apps, games, hardware projects, art installations. If you can dream it, we'll help you build it.
               </p>
             </details>
 
@@ -235,7 +254,7 @@ export default function Home() {
           </div>
           
           <p className="text-gray-500 text-sm">
-            Biratnagar, Nepal • Building the future together
+            Building the future together
           </p>
           
           <p className="text-gray-400 text-sm">
