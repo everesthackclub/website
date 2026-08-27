@@ -8,7 +8,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-b border-gray-200 dark:border-neutral-800">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -22,8 +22,8 @@ export default function Navbar() {
                 className="group-hover:scale-110 transition-transform object-contain"
               />
             </div>
-            <span className="font-bold text-xl text-black">
-              Everest <span className="text-red-600">Hack Club</span>
+            <span className="font-bold text-xl text-black dark:text-white">
+              Everest <span className="text-red-600 dark:text-red-400">Hack Club</span>
             </span>
           </Link>
 
@@ -31,19 +31,25 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-8">
             <Link
               href="/#about"
-              className="text-gray-700 hover:text-black font-medium transition-colors"
+              className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white font-medium transition-colors"
             >
               About
             </Link>
             <Link
               href="/#faq"
-              className="text-gray-700 hover:text-black font-medium transition-colors"
+              className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white font-medium transition-colors"
             >
               FAQ
             </Link>
             <Link
+              href="/#team"
+              className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white font-medium transition-colors"
+            >
+              Team
+            </Link>
+            <Link
               href="/contact"
-              className="px-6 py-2 bg-black text-white rounded-full font-semibold hover:bg-gray-900 transition-all"
+              className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full font-semibold hover:bg-gray-900 dark:hover:bg-gray-200 transition-all"
             >
               Contact
             </Link>
@@ -52,7 +58,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-gray-700 hover:text-black"
+            className="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
             aria-label="Toggle menu"
           >
             <svg
@@ -79,21 +85,28 @@ export default function Navbar() {
             <Link
               href="/#about"
               onClick={() => setIsOpen(false)}
-              className="block text-gray-700 hover:text-black font-medium"
+              className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white font-medium"
             >
               About
             </Link>
             <Link
               href="/#faq"
               onClick={() => setIsOpen(false)}
-              className="block text-gray-700 hover:text-black font-medium"
+              className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white font-medium"
             >
               FAQ
             </Link>
             <Link
+              href="/#team"
+              onClick={() => setIsOpen(false)}
+              className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white font-medium"
+            >
+              Team
+            </Link>
+            <Link
               href="/contact"
               onClick={() => setIsOpen(false)}
-              className="block w-full px-6 py-2 bg-black text-white rounded-full font-semibold text-center hover:bg-gray-900 transition-all"
+              className="block w-full px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full font-semibold text-center hover:bg-gray-900 dark:hover:bg-gray-200 transition-all"
             >
               Contact
             </Link>

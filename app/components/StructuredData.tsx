@@ -1,3 +1,5 @@
+import { SOCIALS, CONTACT_EMAIL, FOUNDERS } from "../lib/site";
+
 export default function StructuredData() {
   const structuredData = {
     '@context': 'https://schema.org',
@@ -17,10 +19,16 @@ export default function StructuredData() {
       latitude: 26.4525,
       longitude: 87.2718,
     },
-    sameAs: [],
+    email: CONTACT_EMAIL,
+    sameAs: SOCIALS.map((social) => social.href),
+    founder: FOUNDERS.map((member) => ({
+      '@type': 'Person',
+      name: member.name,
+    })),
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'General Inquiries',
+      email: CONTACT_EMAIL,
       availableLanguage: ['en', 'ne'],
     },
   };
