@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import StructuredData from "./components/StructuredData";
 
@@ -39,16 +39,19 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-  verification: {
-    google: "your-google-verification-code",
-  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
       <head>
-        <meta name="theme-color" content="#ffffff" />
         <meta name="geo.region" content="NP-2" />
         <meta name="geo.placename" content="Biratnagar" />
         <meta name="geo.position" content="26.4525;87.2718" />
