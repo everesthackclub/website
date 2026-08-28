@@ -2,15 +2,21 @@ import { FOUNDERS } from "../lib/site";
 
 export default function Founders() {
   return (
-    <section id="team" className="relative px-6 py-24 md:py-32 bg-gradient-to-b from-white to-gray-50 dark:from-neutral-950 dark:to-neutral-900">
+    <section
+      id="team"
+      className="px-6 py-20 md:py-28 border-t border-gray-200 dark:border-neutral-800"
+    >
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-black dark:text-white mb-6">
-            Club Members
+        <div className="mb-12">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-600 dark:text-red-500 mb-4">
+            Team
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-4">
+            Club members
           </h2>
-          <div className="w-16 h-1 bg-red-600 dark:bg-red-500 mx-auto rounded-full mb-6"></div>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            The students who started Everest Hack Club. Reach out to any of us if you have a question.
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
+            The students who started Everest Hack Club. Reach out to any of us if
+            you have a question.
           </p>
         </div>
 
@@ -18,15 +24,15 @@ export default function Founders() {
           {FOUNDERS.map((member) => (
             <div
               key={member.name}
-              className="group p-8 bg-white dark:bg-neutral-900 rounded-2xl border border-gray-200 dark:border-neutral-800 hover:border-gray-300 dark:hover:border-neutral-700 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 text-center"
+              className="p-6 bg-white dark:bg-neutral-900 rounded-xl border border-gray-200 dark:border-neutral-800 hover:border-gray-300 dark:hover:border-neutral-700 transition-colors"
             >
-              <div className="w-20 h-20 mx-auto mb-5 rounded-full bg-gradient-to-br from-red-600 to-red-500 dark:from-red-500 dark:to-red-400 flex items-center justify-center text-white text-2xl font-bold group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 mb-5 rounded-full bg-gray-900 dark:bg-neutral-800 flex items-center justify-center text-white text-sm font-semibold tracking-wide">
                 {member.initials}
               </div>
-              <h3 className="text-lg font-bold text-black dark:text-white mb-1">
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
                 {member.name}
               </h3>
-              <p className="text-sm font-medium text-red-600 dark:text-red-400">
+              <p className="text-sm text-gray-500 dark:text-neutral-500">
                 Founder
               </p>
             </div>

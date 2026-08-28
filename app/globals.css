@@ -47,22 +47,57 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: 'Phantom Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
+/* Keep in-page anchors clear of the fixed navbar */
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+/* Consistent, visible keyboard focus */
+:focus-visible {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: #fee2e2;
+  color: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  ::selection {
+    background: #7f1d1d;
+    color: #ffffff;
   }
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

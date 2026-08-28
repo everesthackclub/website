@@ -8,11 +8,11 @@ const ICONS = {
 } as const;
 
 const tileClass =
-  "w-11 h-11 rounded-xl border border-gray-200 dark:border-neutral-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-white dark:hover:text-black hover:bg-black dark:hover:bg-white hover:border-transparent dark:hover:border-transparent transition-all";
+  "w-10 h-10 rounded-lg border border-gray-200 dark:border-neutral-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-neutral-700 transition-colors";
 
 export default function SocialLinks() {
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap gap-2">
       {SOCIALS.map((social) => {
         const Icon = ICONS[social.name];
         return (
@@ -25,7 +25,7 @@ export default function SocialLinks() {
             title={social.handle}
             className={tileClass}
           >
-            <Icon className="w-5 h-5" />
+            <Icon className="w-4 h-4" />
           </a>
         );
       })}
@@ -37,7 +37,7 @@ export default function SocialLinks() {
         title="Join our Discord"
         className={tileClass}
       >
-        <DiscordIcon className="w-5 h-5" />
+        <DiscordIcon className="w-4 h-4" />
       </a>
     </div>
   );

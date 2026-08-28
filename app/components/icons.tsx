@@ -47,3 +47,65 @@ export function DiscordIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function ArrowRightIcon(props: IconProps) {
+  return (
+    <svg fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 12h16m0 0l-6-6m6 6l-6 6" />
+    </svg>
+  );
+}
+
+export function ArrowLeftIcon(props: IconProps) {
+  return (
+    <svg fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4m0 0l6-6m-6 6l6 6" />
+    </svg>
+  );
+}
+
+export function ChevronDownIcon(props: IconProps) {
+  return (
+    <svg fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
+
+export function LocationIcon(props: IconProps) {
+  return (
+    <svg fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+}
+
+export function CodeIcon(props: IconProps) {
+  return (
+    <svg fill="none" stroke="currentColor" strokeWidth={1.75} viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 7l5 5-5 5M7 7l-5 5 5 5M14 4l-4 16" />
+    </svg>
+  );
+}
+
+export function SlidersIcon(props: IconProps) {
+  return (
+    <svg fill="none" stroke="currentColor" strokeWidth={1.75} viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h4m4 0h8M4 12h10m4 0h2M4 18h6m4 0h6" />
+      <circle cx="10" cy="6" r="2" />
+      <circle cx="16" cy="12" r="2" />
+      <circle cx="12" cy="18" r="2" />
+    </svg>
+  );
+}
+
+export function UsersIcon(props: IconProps) {
+  return (
+    <svg fill="none" stroke="currentColor" strokeWidth={1.75} viewBox="0 0 24 24" aria-hidden="true" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19v-1a4 4 0 00-4-4H6a4 4 0 00-4 4v1" />
+      <circle cx="8.5" cy="7" r="3.5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 10.5a3 3 0 100-6M18.5 19v-1a4 4 0 00-2.2-3.57" />
+    </svg>
+  );
+}
