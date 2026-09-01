@@ -3,16 +3,13 @@ import { InstagramIcon, LinkedInIcon, GitHubIcon, DiscordIcon } from "./icons";
 
 const ICONS = {
   Instagram: InstagramIcon,
-  LinkedIn: LinkedInIcon,
-  GitHub: GitHubIcon,
+  LinkedIn:  LinkedInIcon,
+  GitHub:    GitHubIcon,
 } as const;
-
-const tileClass =
-  "w-11 h-11 rounded-xl border border-gray-200 dark:border-neutral-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-white dark:hover:text-black hover:bg-black dark:hover:bg-white hover:border-transparent dark:hover:border-transparent transition-all";
 
 export default function SocialLinks() {
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap gap-2">
       {SOCIALS.map((social) => {
         const Icon = ICONS[social.name];
         return (
@@ -21,11 +18,11 @@ export default function SocialLinks() {
             href={social.href}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={social.name}
+            aria-label={`${social.name} — ${social.handle}`}
             title={social.handle}
-            className={tileClass}
+            className="w-9 h-9 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-subtle)] hover:shadow-[var(--shadow-sm)] transition-all duration-150"
           >
-            <Icon className="w-5 h-5" />
+            <Icon className="w-4 h-4" />
           </a>
         );
       })}
@@ -33,11 +30,11 @@ export default function SocialLinks() {
         href={DISCORD_URL}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Discord"
+        aria-label="Discord — Join our server"
         title="Join our Discord"
-        className={tileClass}
+        className="w-9 h-9 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-subtle)] hover:shadow-[var(--shadow-sm)] transition-all duration-150"
       >
-        <DiscordIcon className="w-5 h-5" />
+        <DiscordIcon className="w-4 h-4" />
       </a>
     </div>
   );

@@ -28,41 +28,203 @@
   font-display: swap;
 }
 
+/* ── Design Tokens ─────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf9;
+  --foreground: #1c1917;
+
+  /* Surfaces & Borders (Crisp, High Contrast) */
+  --surface-1: #ffffff;
+  --surface-2: #f5f5f4;
+  --surface-code: #18181b;
+  --border: #e7e5e4;
+  --border-dark: #1c1917;
+
+  /* Brand */
+  --red: #e63329;
+  --red-soft: #fef2f2;
+
+  /* Text Scale */
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-tertiary: #a8a29e;
+  --text-invert: #fafaf9;
+
+  /* Hard Solid Shadows (Tactile, Hacker Aesthetic) */
+  --shadow-retro: 4px 4px 0px 0px #1c1917;
+  --shadow-retro-hover: 2px 2px 0px 0px #1c1917;
+  --shadow-retro-red: 4px 4px 0px 0px #e63329;
+
+  /* Font Family override variables */
+  --font-mono: 'Courier New', ui-monospace, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: #09090b;
+    --foreground: #f4f4f5;
+
+    --surface-1: #18181b;
+    --surface-2: #27272a;
+    --surface-code: #09090b;
+    --border: #27272a;
+    --border-dark: #fafafa;
+
+    --red: #ec372c;
+    --red-soft: #2d1616;
+
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --text-tertiary: #52525b;
+    --text-invert: #09090b;
+
+    --shadow-retro: 4px 4px 0px 0px #fafafa;
+    --shadow-retro-hover: 2px 2px 0px 0px #fafafa;
+    --shadow-retro-red: 4px 4px 0px 0px #ec372c;
+  }
+}
+
+:root.dark {
+  --background: #09090b;
+  --foreground: #f4f4f5;
+
+  --surface-1: #18181b;
+  --surface-2: #27272a;
+  --surface-code: #09090b;
+  --border: #27272a;
+  --border-dark: #fafafa;
+
+  --red: #ec372c;
+  --red-soft: #2d1616;
+
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #52525b;
+  --text-invert: #09090b;
+
+  --shadow-retro: 4px 4px 0px 0px #fafafa;
+  --shadow-retro-hover: 2px 2px 0px 0px #fafafa;
+  --shadow-retro-red: 4px 4px 0px 0px #ec372c;
+}
+
+:root.light {
+  --background: #fafaf9;
+  --foreground: #1c1917;
+
+  --surface-1: #ffffff;
+  --surface-2: #f5f5f4;
+  --surface-code: #18181b;
+  --border: #e7e5e4;
+  --border-dark: #1c1917;
+
+  --red: #e63329;
+  --red-soft: #fef2f2;
+
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-tertiary: #a8a29e;
+  --text-invert: #fafaf9;
+
+  --shadow-retro: 4px 4px 0px 0px #1c1917;
+  --shadow-retro-hover: 2px 2px 0px 0px #1c1917;
+  --shadow-retro-red: 4px 4px 0px 0px #e63329;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: 'Phantom Sans', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Courier New', monospace;
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base Styles ────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Phantom Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Phantom Sans', system-ui, sans-serif;
 }
 
+/* Monospace text style helpers */
+.font-hacker-mono {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  letter-spacing: -0.02em;
+}
+
+/* Dot Grid Background (Cozy & authentic) */
+.bg-dot-grid {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Grid background from magazine */
+.bg-grid {
+  background:
+    url("/bglines.svg") center repeat,
+    #f3faff;
+}
+
+/* Drop shadow for stickers */
+.drop-shadow-sticker {
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.25));
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-8px) rotate(1deg); }
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-cursor {
+  animation: cursor-blink 1s step-end infinite;
+}
+
+/* Focus style */
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+/* ── Additional Utilities ───────────────────────────────────── */
+.animate-spin-slow {
+  animation: spin 8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: translateY(-20px);
+  to {
+    transform: rotate(360deg);
   }
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+/* Carousel scroll animation */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@media (pointer: fine) {
+  .group:has(*:hover) .track {
+    animation-play-state: paused !important;
+  }
 }

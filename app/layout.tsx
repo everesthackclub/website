@@ -1,10 +1,21 @@
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import "./globals.css";
 import StructuredData from "./components/StructuredData";
+import KeyboardShortcuts from "./components/KeyboardShortcuts";
+
+const SITE_URL = "https://everesthackclub.com";
+const SITE_NAME = "Everest Hack Club";
+const SITE_DESC =
+  "Everest Hack Club is a student-led coding and technology community in Biratnagar, Nepal. Join us to build projects, learn programming, and connect with young makers. Build. Break. Learn.";
 
 export const metadata: Metadata = {
-  title: "Everest Hack Club | Student Coding Community in Biratnagar, Nepal",
-  description: "Everest Hack Club is a student-led coding and technology community in Biratnagar, Nepal. Join us to build projects, learn programming, and connect with young makers. Build. Break. Learn.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME}`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESC,
   keywords: [
     "Everest Hack Club",
     "Hack Club Biratnagar",
@@ -15,21 +26,39 @@ export const metadata: Metadata = {
     "tech community Nepal",
     "learn coding Biratnagar",
     "student hackers Nepal",
-    "Everest College coding club"
+    "Everest College coding club",
+    "hackathon Nepal",
+    "tech events Biratnagar",
   ],
-  authors: [{ name: "Everest Hack Club" }],
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  category: "technology",
+  alternates: {
+    canonical: SITE_URL,
+  },
   openGraph: {
-    title: "Everest Hack Club | Build. Break. Learn.",
-    description: "Student-led coding community in Biratnagar, Nepal. Join young makers building the future.",
-    url: "https://everesthackclub.com",
-    siteName: "Everest Hack Club",
+    title: `${SITE_NAME} | Build. Break. Learn.`,
+    description:
+      "Student-led coding community in Biratnagar, Nepal. Join young makers building the future.",
+    url: SITE_URL,
+    siteName: SITE_NAME,
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} — Build. Break. Learn.`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Everest Hack Club | Build. Break. Learn.",
+    title: `${SITE_NAME} | Build. Break. Learn.`,
     description: "Student-led coding community in Biratnagar, Nepal",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -37,28 +66,45 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: dark)",  color: "#0d0d0d" },
   ],
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Resolve the saved theme on the server so the correct class is in the very
+  // first byte of HTML — no flash, and no inline <script> in the React tree.
+  // When no cookie is set, globals.css falls back to `prefers-color-scheme`
+  // via the `:root:not(.light)` rule.
+  const stored = (await cookies()).get("theme")?.value;
+  const themeClass = stored === "dark" || stored === "light" ? stored : "";
+
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className={`h-full antialiased ${themeClass}`.trim()}>
       <head>
-        <meta name="geo.region" content="NP-2" />
+        {/* Geo tags */}
+        <meta name="geo.region"    content="NP-2" />
         <meta name="geo.placename" content="Biratnagar" />
-        <meta name="geo.position" content="26.4525;87.2718" />
-        <meta name="ICBM" content="26.4525, 87.2718" />
+        <meta name="geo.position"  content="26.4525;87.2718" />
+        <meta name="ICBM"          content="26.4525, 87.2718" />
+
         <StructuredData />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <KeyboardShortcuts />
+        {children}
+      </body>
     </html>
   );
 }
