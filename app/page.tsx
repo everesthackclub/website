@@ -43,26 +43,26 @@ export default function Home() {
           {/* 6 stickers total - sides only, no center */}
           {/* Top corners - 2 stickers */}
           <div className="absolute top-4 right-12 lg:right-20 z-10 max-sm:hidden">
-            <DraggableSticker src="/Stickers/classic/hack-camp.png" alt="" width={120} shadow className="-rotate-6" />
+            <DraggableSticker src="/stickers/classic/hack-camp.png" alt="" width={120} shadow className="-rotate-6" />
           </div>
           <div className="absolute top-8 left-12 lg:left-20 z-10 max-sm:hidden">
-            <DraggableSticker src="/Stickers/classic/arcade.png" alt="" width={115} shadow className="rotate-5" />
+            <DraggableSticker src="/stickers/classic/arcade.png" alt="" width={115} shadow className="rotate-5" />
           </div>
           
           {/* Middle sides - 2 stickers (below the top ones) */}
           <div className="absolute top-48 right-8 lg:right-16 z-10 max-md:hidden">
-            <DraggableSticker src="/Stickers/classic/orphmoji-yippee.png" alt="" width={95} shadow className="rotate-12" />
+            <DraggableSticker src="/stickers/classic/orphmoji-yippee.png" alt="" width={95} shadow className="rotate-12" />
           </div>
           <div className="absolute top-52 left-8 lg:left-16 z-10 max-md:hidden">
-            <DraggableSticker src="/Stickers/classic/epoch.png" alt="" width={90} shadow className="-rotate-8" />
+            <DraggableSticker src="/stickers/classic/epoch.png" alt="" width={90} shadow className="-rotate-8" />
           </div>
           
           {/* Lower sides - 2 more stickers (below middle ones) */}
           <div className="absolute bottom-12 right-8 lg:right-16 z-10 max-lg:hidden">
-            <DraggableSticker src="/Stickers/classic/sledding.png" alt="" width={100} shadow className="rotate-6" />
+            <DraggableSticker src="/stickers/classic/sledding.png" alt="" width={100} shadow className="rotate-6" />
           </div>
           <div className="absolute bottom-16 left-8 lg:left-16 z-10 max-lg:hidden">
-            <DraggableSticker src="/Stickers/classic/game-lab.png" alt="" width={105} shadow className="-rotate-7" />
+            <DraggableSticker src="/stickers/classic/game-lab.png" alt="" width={105} shadow className="-rotate-7" />
           </div>
 
           {/* Main Content */}
@@ -126,16 +126,16 @@ export default function Home() {
       <section className="relative px-6 sm:px-12 py-20 bg-white">
         {/* More Stickers */}
         <div className="absolute top-12 -left-4 z-10">
-          <DraggableSticker src="/Stickers/classic/burst.png" alt="" width={144} shadow className="rotate-2" />
+          <DraggableSticker src="/stickers/classic/burst.png" alt="" width={144} shadow className="rotate-2" />
         </div>
         <div className="absolute top-48 -right-2 z-10 max-md:hidden">
-          <DraggableSticker src="/Stickers/classic/valorant.png" alt="" width={144} shadow className="-rotate-6" />
+          <DraggableSticker src="/stickers/classic/valorant.png" alt="" width={144} shadow className="-rotate-6" />
         </div>
         <div className="absolute bottom-20 left-8 z-10 max-md:hidden">
-          <DraggableSticker src="/Stickers/classic/orpheus-boba.png" alt="" width={96} shadow className="rotate-3" />
+          <DraggableSticker src="/stickers/classic/orpheus-boba.png" alt="" width={96} shadow className="rotate-3" />
         </div>
         <div className="absolute bottom-12 right-8 z-10 max-md:hidden">
-          <DraggableSticker src="/Stickers/classic/jetlag.png" alt="" width={128} shadow className="-rotate-3" />
+          <DraggableSticker src="/stickers/classic/jetlag.png" alt="" width={128} shadow className="-rotate-3" />
         </div>
 
         <div className="max-w-6xl mx-auto pointer-events-auto">
@@ -177,10 +177,10 @@ export default function Home() {
       <section className="relative px-6 sm:px-12 py-20 bg-gradient-to-br from-[#c3e6f3] to-[#abc8f4]">
         {/* Stickers */}
         <div className="absolute -top-4 left-8 z-10 max-md:hidden">
-          <DraggableSticker src="/Stickers/classic/hack-to-the-future.png" alt="" width={120} shadow className="-rotate-6" />
+          <DraggableSticker src="/stickers/classic/hack-to-the-future.png" alt="" width={120} shadow className="-rotate-6" />
         </div>
         <div className="absolute -bottom-6 right-12 z-10 max-md:hidden">
-          <DraggableSticker src="/Stickers/classic/ship.png" alt="" width={110} shadow className="rotate-4" />
+          <DraggableSticker src="/stickers/classic/ship.png" alt="" width={110} shadow className="rotate-4" />
         </div>
 
         <div className="max-w-4xl mx-auto pointer-events-auto">
