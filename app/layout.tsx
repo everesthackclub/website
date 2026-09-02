@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
+import Script from "next/script";
 import "./globals.css";
 import StructuredData from "./components/StructuredData";
 import KeyboardShortcuts from "./components/KeyboardShortcuts";
+import { SITE_URL } from "./lib/site";
 
-const SITE_URL = "https://everesthackclub.com";
+const GA_MEASUREMENT_ID = "G-HYQFG0M7C0";
+
 const SITE_NAME = "Everest Hack Club";
 const SITE_DESC =
   "Everest Hack Club is a student-led coding and technology community in Biratnagar, Nepal. Join us to build projects, learn programming, and connect with young makers. Build. Break. Learn.";
@@ -104,6 +107,18 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <KeyboardShortcuts />
         {children}
+
+        {/* Google Analytics (gtag.js) */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        />
+        <Script id="google-analytics">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', '${GA_MEASUREMENT_ID}');`}
+        </Script>
       </body>
     </html>
   );

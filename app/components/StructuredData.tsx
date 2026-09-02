@@ -1,4 +1,4 @@
-import { SOCIALS, CONTACT_EMAIL, FOUNDERS } from "../lib/site";
+import { SOCIALS, CONTACT_EMAIL, FOUNDERS, SITE_URL } from "../lib/site";
 
 export default function StructuredData() {
   const structuredData = {
@@ -7,8 +7,8 @@ export default function StructuredData() {
     name: 'Everest Hack Club',
     alternateName: 'Everest Hack Club Biratnagar',
     description: 'Student-led coding and technology community in Biratnagar, Nepal',
-    url: 'https://everesthackclub.com',
-    logo: 'https://everesthackclub.com/Image/logo2.svg',
+    url: SITE_URL,
+    logo: `${SITE_URL}/Image/logo2.svg`,
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Biratnagar',

@@ -43,8 +43,11 @@ export default function HackerConsole() {
       case "events":
         response = [
           `> ${cmd}`,
-          "Current event: 'EHC Launch & Intro Session' [Status: Planning]",
-          "Type 'join' to get plugged into our chats and stay tuned for the venue details!",
+          "Next event: 'Weekly Hack Session' [Status: Confirmed]",
+          "When: Friday, September 4 | 9:00 AM - 11:00 AM",
+          "Where: Everest College, Biratnagar",
+          "Bring your own laptop. Onboarding + club setup handled on-site. Beginners welcome.",
+          "Type 'join' to get plugged into our chats!",
         ];
         break;
       case "join":
