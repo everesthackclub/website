@@ -1,3 +1,7 @@
+// Canonical origin for the deployed site. Imported by layout metadata,
+// robots.ts, sitemap.ts and StructuredData so the domain lives in one place.
+export const SITE_URL = "https://everesthackclub.vercel.app";
+
 export const JOIN_URL = "https://clubs.hackclub.com/auth/member?join=9JN9CG";
 
 export const CONTACT_EMAIL = "everesthackclub@gmail.com";
