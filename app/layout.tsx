@@ -63,6 +63,9 @@ export const metadata: Metadata = {
     description: "Student-led coding community in Biratnagar, Nepal",
     images: ["/og-image.png"],
   },
+  verification: {
+    google: "IlTuTqVA6pi_rgjh0scCGvJdJFIOaDD59IW7xRv1p2I",
+  },
   robots: {
     index: true,
     follow: true,
