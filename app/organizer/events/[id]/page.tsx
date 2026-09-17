@@ -129,57 +129,21 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
     setActioningAttendeeId(null);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-[#5e6fe5] border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-lg font-medium text-[#57534e]">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   if (!event) {
     return (
-      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center">
+      <main className="flex-1 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-[#1c1917] mb-2">Event Not Found</h1>
           <Link href="/organizer/events" className="text-[#5e6fe5] font-medium hover:text-[#5167dd]">
             ← Back to Events
           </Link>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] flex">
-      {/* Sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-white border-r border-[#e7e5e4]">
-        <div className="p-6 border-b border-[#e7e5e4]">
-          <h2 className="text-2xl font-black text-[#1c1917]">Everest HC</h2>
-          <p className="text-sm text-[#57534e] mt-1">Organizer</p>
-        </div>
-        
-        <nav className="flex-1 p-4 space-y-1">
-          <Link href="/organizer/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#57534e] hover:bg-[#f5f5f4] font-medium">
-            Dashboard
-          </Link>
-          <Link href="/organizer/hackers" className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#57534e] hover:bg-[#f5f5f4] font-medium">
-            Hackers
-          </Link>
-          <Link href="/organizer/events" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#ec3750] text-white font-bold">
-            Events
-          </Link>
-          <Link href="/organizer/scan" className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#57534e] hover:bg-[#f5f5f4] font-medium">
-            Scanner
-          </Link>
-        </nav>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto">
+    <main className="flex-1 overflow-auto">
         <div className="p-6 lg:p-8 max-w-7xl mx-auto">
           <div className="mb-6">
             <Link href="/organizer/events" className="text-[#57534e] hover:text-[#1c1917] font-medium mb-4 inline-block">
@@ -364,6 +328,5 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
       </main>
-    </div>
   );
 }

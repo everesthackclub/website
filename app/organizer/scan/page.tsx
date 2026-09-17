@@ -264,21 +264,10 @@ export default function ScannerPage() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-[#5e6fe5] border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-lg font-medium text-[#57534e]">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   // Mobile-only view
   if (isMobile) {
     return (
-      <div className="min-h-screen bg-[#fafaf9] flex flex-col">
+      <div className="flex-1 flex flex-col">
         <div className="bg-white border-b border-[#e7e5e4] p-4">
           <h1 className="text-2xl font-black text-[#1c1917] mb-3">Scanner</h1>
           <select
@@ -398,32 +387,23 @@ export default function ScannerPage() {
 
             {scanResult && (
               <div className={`fixed inset-x-0 top-0 z-50 mx-4 mt-4 animate-slide-down`}>
-                <div className={`rounded-2xl border-2 p-6 backdrop-blur-xl shadow-2xl ${
+                <div className={`rounded-2xl border-2 p-4 backdrop-blur-xl shadow-2xl ${
                   scanResult.success 
                     ? "bg-green-500/95 border-green-400" 
                     : "bg-red-500/95 border-red-400"
                 }`}>
-                  <div className="flex items-start gap-4">
-                    <div className={`text-5xl ${scanResult.success ? "animate-bounce" : "animate-pulse"}`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`text-3xl ${scanResult.success ? "animate-bounce" : "animate-pulse"}`}>
                       {scanResult.success ? "✓" : "✗"}
                     </div>
                     <div className="flex-1 text-white">
-                      <h3 className="text-2xl font-black mb-2">
+                      <h3 className="text-lg font-black">
                         {scanResult.success ? "Checked In!" : scanResult.error}
                       </h3>
                       {scanResult.attendee && (
-                        <div className="bg-white/20 rounded-xl p-4 backdrop-blur-sm">
-                          <p className="text-xl font-black mb-1">
-                            {scanResult.attendee.firstName} {scanResult.attendee.lastName}
-                          </p>
-                          <p className="text-sm opacity-90">{scanResult.attendee.email}</p>
-                          <p className="text-sm opacity-90">
-                            Class {scanResult.attendee.class}-{scanResult.attendee.section}
-                          </p>
-                        </div>
-                      )}
-                      {scanResult.message && (
-                        <p className="text-sm mt-2 opacity-90">{scanResult.message}</p>
+                        <p className="text-sm opacity-90 mt-1">
+                          {scanResult.attendee.firstName} {scanResult.attendee.lastName}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -450,36 +430,7 @@ export default function ScannerPage() {
 
   // Desktop view with sidebar
   return (
-    <div className="min-h-screen bg-[#fafaf9] flex">
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-white border-r border-[#e7e5e4]">
-        <div className="p-6 border-b border-[#e7e5e4]">
-          <h2 className="text-2xl font-black text-[#1c1917]">Everest HC</h2>
-          <p className="text-sm text-[#57534e] mt-1">Organizer</p>
-        </div>
-        
-        <nav className="flex-1 p-4 space-y-1">
-          <Link href="/organizer/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#57534e] hover:bg-[#f5f5f4] font-medium">
-            Dashboard
-          </Link>
-          <Link href="/organizer/hackers" className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#57534e] hover:bg-[#f5f5f4] font-medium">
-            Hackers
-          </Link>
-          <Link href="/organizer/events" className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#57534e] hover:bg-[#f5f5f4] font-medium">
-            Events
-          </Link>
-          <Link href="/organizer/scan" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#ec3750] text-white font-bold">
-            Scanner
-          </Link>
-        </nav>
-
-        <div className="p-4 border-t border-[#e7e5e4]">
-          <button onClick={handleLogout} className="w-full px-4 py-2 text-sm text-[#57534e] hover:text-[#ec3750] font-medium">
-            Logout
-          </button>
-        </div>
-      </aside>
-
-      <main className="flex-1 overflow-auto p-6 lg:p-8 max-w-5xl mx-auto">
+    <main className="flex-1 overflow-auto p-6 lg:p-8 max-w-5xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl lg:text-4xl font-black text-[#1c1917] mb-4">Scanner</h1>
           
@@ -589,33 +540,23 @@ export default function ScannerPage() {
 
             {scanResult && (
               <div className={`fixed top-8 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md animate-slide-down`}>
-                <div className={`rounded-2xl border-2 p-8 backdrop-blur-xl shadow-2xl ${
+                <div className={`rounded-2xl border-2 p-5 backdrop-blur-xl shadow-2xl ${
                   scanResult.success 
                     ? "bg-green-500/95 border-green-400" 
                     : "bg-red-500/95 border-red-400"
                 }`}>
-                  <div className="flex items-start gap-5">
-                    <div className={`text-6xl ${scanResult.success ? "animate-bounce" : "animate-pulse"}`}>
+                  <div className="flex items-center gap-4">
+                    <div className={`text-4xl ${scanResult.success ? "animate-bounce" : "animate-pulse"}`}>
                       {scanResult.success ? "✓" : "✗"}
                     </div>
                     <div className="flex-1 text-white">
-                      <h3 className="text-3xl font-black mb-3">
+                      <h3 className="text-2xl font-black">
                         {scanResult.success ? "Checked In!" : scanResult.error}
                       </h3>
                       {scanResult.attendee && (
-                        <div className="bg-white/20 rounded-xl p-5 backdrop-blur-sm">
-                          <p className="text-2xl font-black mb-2">
-                            {scanResult.attendee.firstName} {scanResult.attendee.lastName}
-                          </p>
-                          <div className="space-y-1 text-sm opacity-90">
-                            <p><span className="font-bold">Email:</span> {scanResult.attendee.email}</p>
-                            <p><span className="font-bold">Phone:</span> {scanResult.attendee.phone}</p>
-                            <p><span className="font-bold">Class:</span> {scanResult.attendee.class}-{scanResult.attendee.section}</p>
-                          </div>
-                        </div>
-                      )}
-                      {scanResult.message && (
-                        <p className="text-sm mt-3 opacity-90">{scanResult.message}</p>
+                        <p className="text-base opacity-90 mt-1">
+                          {scanResult.attendee.firstName} {scanResult.attendee.lastName}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -625,6 +566,5 @@ export default function ScannerPage() {
           </>
         )}
       </main>
-    </div>
   );
 }
