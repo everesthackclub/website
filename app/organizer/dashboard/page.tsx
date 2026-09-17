@@ -48,6 +48,9 @@ export default function DashboardPage() {
 
         // Load events and stats
         const eventsRes = await fetch("/api/organizer/events");
+        if (!eventsRes.ok) {
+          throw new Error('Failed to fetch events');
+        }
         const eventsData = await eventsRes.json();
         
         if (eventsData.events) {

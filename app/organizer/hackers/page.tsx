@@ -39,56 +39,7 @@ export default async function HackersPage() {
   const checkedInCount = attendees.filter(a => a.isCheckedIn).length;
 
   return (
-    <div className="min-h-screen bg-[#fafaf9] flex">
-      {/* Sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-white border-r border-[#e7e5e4]">
-        <div className="p-6 border-b border-[#e7e5e4]">
-          <h2 className="text-2xl font-black text-[#1c1917]">Everest HC</h2>
-          <p className="text-sm text-[#57534e] mt-1">Organizer</p>
-        </div>
-        
-        <nav className="flex-1 p-4 space-y-1">
-          <Link
-            href="/organizer/dashboard"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#57534e] hover:bg-[#f5f5f4] font-medium"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/organizer/hackers"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#ec3750] text-white font-bold"
-          >
-            Hackers
-          </Link>
-          <Link
-            href="/organizer/events"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#57534e] hover:bg-[#f5f5f4] font-medium"
-          >
-            Events
-          </Link>
-          <Link
-            href="/organizer/scan"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-[#57534e] hover:bg-[#f5f5f4] font-medium"
-          >
-            Scanner
-          </Link>
-        </nav>
-
-        <div className="p-4 border-t border-[#e7e5e4]">
-          <div className="px-4 py-3 bg-[#f5f5f4] rounded-lg mb-2">
-            <p className="text-sm font-bold text-[#1c1917]">{organizer?.name}</p>
-            <p className="text-xs text-[#57534e]">{organizer?.email}</p>
-          </div>
-          <form action="/api/organizer/logout" method="POST">
-            <button className="w-full px-4 py-2 text-sm text-[#57534e] hover:text-[#ec3750] font-medium">
-              Logout
-            </button>
-          </form>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto">
+    <main className="flex-1 overflow-auto">
         <div className="lg:hidden bg-white border-b border-[#e7e5e4] p-4">
           <h1 className="text-2xl font-black text-[#1c1917]">Hackers</h1>
         </div>
@@ -188,6 +139,5 @@ export default async function HackersPage() {
           </div>
         </div>
       </main>
-    </div>
   );
 }
