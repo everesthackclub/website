@@ -31,6 +31,7 @@ model Attendee {
   section     String
   ticketToken String    @unique @default(uuid())
   isCheckedIn Boolean   @default(false)
+  isApproved  Boolean   @default(true)
   checkedInAt DateTime?
   checkedInBy String?   // Organizer ID who scanned them
   createdAt   DateTime  @default(now())

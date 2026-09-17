@@ -1,43 +1,141 @@
-import { cookies } from "next/headers";
-import { redirect, notFound } from "next/navigation";
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { prisma } from "@/app/lib/prisma";
-import { verifyOrganizerJWT } from "@/app/lib/auth";
 
-export default async function EventAttendeesPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  
-  const cookieStore = await cookies();
-  const token = cookieStore.get("organizer_token")?.value;
-  if (!token) redirect("/organizer/login");
+interface Attendee {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  class: string;
+  section: string;
+  isCheckedIn: boolean;
+  isApproved: boolean;
+  checkedInAt: Date | null;
+  createdAt: Date;
+}
 
-  const request = new Request("http://localhost", {
-    headers: { cookie: `organizer_token=${token}` },
-  });
-  const payload = verifyOrganizerJWT(request);
-  if (!payload) redirect("/organizer/login");
+interface Event {
+  id: string;
+  name: string;
+  date: Date;
+  time: string;
+  location: string;
+  isActive: boolean;
+}
 
-  const event = await prisma.event.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      name: true,
-      date: true,
-      time: true,
-      location: true,
-      isActive: true,
-    },
-  });
+export default function EventAttendeesPage({ params }: { params: Promise<{ id: string }> }) {
+  const router = useRouter();
+  const [eventId, setEventId] = useState<string>("");
+  const [event, setEvent] = useState<Event | null>(null);
+  const [attendees, setAttendees] = useState<Attendee[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [actioningAttendeeId, setActioningAttendeeId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
-  if (!event) notFound();
+  useEffect(() => {
+    const init = async () => {
+      const { id } = await params;
+      setEventId(id);
+      await loadData(id);
+    };
+    init();
+  }, [params]);
 
-  const attendees = await prisma.attendee.findMany({
-    where: { eventId: id },
-    orderBy: [
-      { isCheckedIn: "desc" },
-      { createdAt: "desc" },
-    ],
-  });
+  const loadData = async (id: string) => {
+    try {
+      // Check auth
+      const authRes = await fetch("/api/organizer/me");
+      if (!authRes.ok) {
+        router.push("/organizer/login");
+        return;
+      }
+
+      // Load event
+      const eventRes = await fetch(`/api/organizer/events/${id}`);
+      const eventData = await eventRes.json();
+      
+      if (eventRes.ok && eventData.event) {
+        setEvent(eventData.event);
+        setAttendees(eventData.event.attendees || []);
+      }
+      
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Load data error:", error);
+      setIsLoading(false);
+    }
+  };
+
+  const handleApproveAttendee = async (attendeeId: string, currentStatus: boolean) => {
+    setActioningAttendeeId(attendeeId);
+    try {
+      const response = await fetch(`/api/attendee/${attendeeId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isApproved: !currentStatus }),
+      });
+
+      if (response.ok) {
+        await loadData(eventId);
+      } else {
+        const data = await response.json();
+        alert(data.error || "Failed to update attendee");
+      }
+    } catch (error) {
+      console.error("Approve attendee error:", error);
+      alert("Failed to update attendee");
+    }
+    setActioningAttendeeId(null);
+  };
+
+  const handleDeleteAttendee = async (attendeeId: string) => {
+    setActioningAttendeeId(attendeeId);
+    try {
+      const response = await fetch(`/api/attendee/${attendeeId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        await loadData(eventId);
+        setDeleteConfirmId(null);
+      } else {
+        const data = await response.json();
+        alert(data.error || "Failed to delete attendee");
+      }
+    } catch (error) {
+      console.error("Delete attendee error:", error);
+      alert("Failed to delete attendee");
+    }
+    setActioningAttendeeId(null);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block w-12 h-12 border-4 border-[#5e6fe5] border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-lg font-medium text-[#57534e]">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!event) {
+    return (
+      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-[#1c1917] mb-2">Event Not Found</h1>
+          <Link href="/organizer/events" className="text-[#5e6fe5] font-medium hover:text-[#5167dd]">
+            ← Back to Events
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const checkedInCount = attendees.filter(a => a.isCheckedIn).length;
 
@@ -120,6 +218,7 @@ export default async function EventAttendeesPage({ params }: { params: Promise<{
                       <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Class</th>
                       <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Status</th>
                       <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Time</th>
+                      <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -144,9 +243,13 @@ export default async function EventAttendeesPage({ params }: { params: Promise<{
                             <span className="inline-block px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
                               Checked In
                             </span>
+                          ) : attendee.isApproved ? (
+                            <span className="inline-block px-2.5 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
+                              Approved
+                            </span>
                           ) : (
-                            <span className="inline-block px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
-                              Registered
+                            <span className="inline-block px-2.5 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">
+                              Pending
                             </span>
                           )}
                         </td>
@@ -159,6 +262,50 @@ export default async function EventAttendeesPage({ params }: { params: Promise<{
                                 minute: "2-digit",
                               })
                             : "—"}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-1">
+                            {!attendee.isCheckedIn && (
+                              <button
+                                onClick={() => handleApproveAttendee(attendee.id, attendee.isApproved)}
+                                disabled={actioningAttendeeId === attendee.id}
+                                className={`px-2 py-1 text-xs font-bold rounded transition-colors disabled:opacity-50 ${
+                                  attendee.isApproved
+                                    ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                    : "bg-[#5e6fe5] text-white hover:bg-[#5167dd]"
+                                }`}
+                                title={attendee.isApproved ? "Unapprove" : "Approve"}
+                              >
+                                {actioningAttendeeId === attendee.id ? "..." : attendee.isApproved ? "✓" : "Approve"}
+                              </button>
+                            )}
+                            
+                            {deleteConfirmId === attendee.id ? (
+                              <>
+                                <button
+                                  onClick={() => handleDeleteAttendee(attendee.id)}
+                                  disabled={actioningAttendeeId === attendee.id}
+                                  className="px-2 py-1 bg-red-600 text-white text-xs font-bold rounded hover:bg-red-700 disabled:opacity-50"
+                                >
+                                  {actioningAttendeeId === attendee.id ? "..." : "Yes"}
+                                </button>
+                                <button
+                                  onClick={() => setDeleteConfirmId(null)}
+                                  className="px-2 py-1 bg-gray-200 text-gray-700 text-xs font-bold rounded hover:bg-gray-300"
+                                >
+                                  No
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                onClick={() => setDeleteConfirmId(attendee.id)}
+                                className="px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded hover:bg-red-200"
+                                title="Delete attendee"
+                              >
+                                ✕
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

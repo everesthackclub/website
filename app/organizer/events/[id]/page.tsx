@@ -10,6 +10,7 @@ interface Attendee {
   lastName: string;
   email: string;
   isCheckedIn: boolean;
+  isApproved: boolean;
   createdAt: string;
 }
 
@@ -34,6 +35,8 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
   const [checkedInCount, setCheckedInCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isToggling, setIsToggling] = useState(false);
+  const [actioningAttendeeId, setActioningAttendeeId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -81,6 +84,49 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
       console.error("Toggle active error:", error);
     }
     setIsToggling(false);
+  };
+
+  const handleApproveAttendee = async (attendeeId: string, currentStatus: boolean) => {
+    setActioningAttendeeId(attendeeId);
+    try {
+      const response = await fetch(`/api/attendee/${attendeeId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isApproved: !currentStatus }),
+      });
+
+      if (response.ok) {
+        await loadEvent(eventId); // Reload event data
+      } else {
+        const data = await response.json();
+        alert(data.error || "Failed to update attendee");
+      }
+    } catch (error) {
+      console.error("Approve attendee error:", error);
+      alert("Failed to update attendee");
+    }
+    setActioningAttendeeId(null);
+  };
+
+  const handleDeleteAttendee = async (attendeeId: string) => {
+    setActioningAttendeeId(attendeeId);
+    try {
+      const response = await fetch(`/api/attendee/${attendeeId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        await loadEvent(eventId); // Reload event data
+        setDeleteConfirmId(null);
+      } else {
+        const data = await response.json();
+        alert(data.error || "Failed to delete attendee");
+      }
+    } catch (error) {
+      console.error("Delete attendee error:", error);
+      alert("Failed to delete attendee");
+    }
+    setActioningAttendeeId(null);
   };
 
   if (isLoading) {
@@ -234,21 +280,75 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
               <div className="space-y-3">
                 {event.attendees.map((attendee) => (
                   <div key={attendee.id} className="flex items-center justify-between p-4 bg-[#fafaf9] rounded-lg">
-                    <div>
+                    <div className="flex-1">
                       <p className="font-bold text-[#1c1917]">
                         {attendee.firstName} {attendee.lastName}
                       </p>
                       <p className="text-sm text-[#57534e]">{attendee.email}</p>
                     </div>
-                    {attendee.isCheckedIn ? (
-                      <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
-                        Checked In
-                      </span>
-                    ) : (
-                      <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
-                        Registered
-                      </span>
-                    )}
+                    
+                    <div className="flex items-center gap-2">
+                      {/* Status badges */}
+                      <div className="flex flex-col gap-1">
+                        {attendee.isCheckedIn ? (
+                          <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                            Checked In
+                          </span>
+                        ) : attendee.isApproved ? (
+                          <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
+                            Approved
+                          </span>
+                        ) : (
+                          <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">
+                            Pending
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex gap-2 ml-3">
+                        {!attendee.isCheckedIn && (
+                          <button
+                            onClick={() => handleApproveAttendee(attendee.id, attendee.isApproved)}
+                            disabled={actioningAttendeeId === attendee.id}
+                            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors disabled:opacity-50 ${
+                              attendee.isApproved
+                                ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                : "bg-[#5e6fe5] text-white hover:bg-[#5167dd]"
+                            }`}
+                            title={attendee.isApproved ? "Unapprove" : "Approve"}
+                          >
+                            {actioningAttendeeId === attendee.id ? "..." : attendee.isApproved ? "✓ Approved" : "Approve"}
+                          </button>
+                        )}
+                        
+                        {deleteConfirmId === attendee.id ? (
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleDeleteAttendee(attendee.id)}
+                              disabled={actioningAttendeeId === attendee.id}
+                              className="px-3 py-1.5 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 disabled:opacity-50"
+                            >
+                              {actioningAttendeeId === attendee.id ? "..." : "Confirm"}
+                            </button>
+                            <button
+                              onClick={() => setDeleteConfirmId(null)}
+                              className="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-300"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setDeleteConfirmId(attendee.id)}
+                            className="px-3 py-1.5 bg-red-100 text-red-700 text-xs font-bold rounded-lg hover:bg-red-200"
+                            title="Delete attendee"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 ))}
                 {event._count.attendees > 10 && (

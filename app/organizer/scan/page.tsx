@@ -37,8 +37,11 @@ export default function ScannerPage() {
   const [isScanning, setIsScanning] = useState(false);
   const [cameraError, setCameraError] = useState<string>("");
   const [isMobile, setIsMobile] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const lastScanRef = useRef<string>("");
+  const processingRef = useRef<boolean>(false);
 
   // Detect mobile
   useEffect(() => {
@@ -118,12 +121,15 @@ export default function ScannerPage() {
             if (result) {
               const ticketToken = result.getText();
               
-              // Pause scanning temporarily
-              if (videoRef.current?.srcObject) {
-                const stream = videoRef.current.srcObject as MediaStream;
-                stream.getTracks().forEach(track => track.stop());
+              // Prevent duplicate scans - ignore if we're already processing or if it's the same code
+              if (processingRef.current || lastScanRef.current === ticketToken) {
+                return;
               }
-              setIsScanning(false);
+
+              // Mark as processing
+              processingRef.current = true;
+              lastScanRef.current = ticketToken;
+              setIsProcessing(true);
 
               try {
                 const response = await fetch("/api/check-in", {
@@ -155,7 +161,12 @@ export default function ScannerPage() {
                 // Resume scanning after 3 seconds
                 setTimeout(() => {
                   setScanResult(null);
-                  setIsScanning(false); // This will trigger restart
+                  setIsProcessing(false);
+                  processingRef.current = false;
+                  // Clear last scan after cooldown so same QR can be scanned again
+                  setTimeout(() => {
+                    lastScanRef.current = "";
+                  }, 2000);
                 }, 3000);
               } catch (error) {
                 console.error("Check-in error:", error);
@@ -166,7 +177,11 @@ export default function ScannerPage() {
 
                 setTimeout(() => {
                   setScanResult(null);
-                  setIsScanning(false);
+                  setIsProcessing(false);
+                  processingRef.current = false;
+                  setTimeout(() => {
+                    lastScanRef.current = "";
+                  }, 2000);
                 }, 3000);
               }
             }
@@ -255,54 +270,81 @@ export default function ScannerPage() {
             )}
             
             {/* Camera Feed with Scanner Frame */}
-            <div className="relative bg-black flex items-center justify-center flex-1" style={{ minHeight: '60vh' }}>
+            <div className="relative bg-black flex items-center justify-center flex-1 overflow-hidden" style={{ minHeight: '60vh' }}>
               <video
                 ref={videoRef}
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
+                playsInline
+                muted
               />
               
               {/* Scanner Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                {/* Dark overlay with cutout */}
-                <div className="absolute inset-0 bg-black/50"></div>
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                {/* Dark overlay with cutout effect */}
+                <div className="absolute inset-0" style={{
+                  background: 'radial-gradient(circle at center, transparent 0%, transparent 140px, rgba(0,0,0,0.7) 180px)'
+                }}></div>
                 
                 {/* Scanning frame */}
                 <div className="relative z-10" style={{ width: '280px', height: '280px' }}>
                   {/* Corner borders */}
-                  <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-white"></div>
-                  <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-white"></div>
-                  <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-white"></div>
-                  <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-white"></div>
+                  <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-[#5e6fe5]"></div>
+                  <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-[#5e6fe5]"></div>
+                  <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-[#5e6fe5]"></div>
+                  <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-[#5e6fe5]"></div>
+                  
+                  {/* Center dot for aim */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-3 h-3 bg-[#5e6fe5] rounded-full opacity-50"></div>
+                  </div>
                   
                   {/* Scanning line animation */}
-                  {isScanning && (
+                  {isScanning && !isProcessing && (
                     <div className="absolute inset-0 overflow-hidden">
                       <div 
-                        className="w-full h-1 bg-gradient-to-r from-transparent via-[#5e6fe5] to-transparent animate-scan"
+                        className="w-full h-1 bg-gradient-to-r from-transparent via-[#5e6fe5] to-transparent"
                         style={{
                           animation: 'scan 2s ease-in-out infinite',
                         }}
                       ></div>
                     </div>
                   )}
+                  
+                  {/* Processing indicator */}
+                  {isProcessing && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#5e6fe5]/20 backdrop-blur-sm rounded-lg">
+                      <div className="text-center">
+                        <div className="inline-block w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mb-2"></div>
+                        <p className="text-white font-bold text-sm">Processing...</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               
               {!isScanning && !cameraError && (
-                <div className="absolute inset-0 flex items-center justify-center z-20">
-                  <div className="text-white text-center bg-black/70 px-6 py-4 rounded-2xl">
+                <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/70">
+                  <div className="text-white text-center px-6 py-4 rounded-2xl">
                     <div className="inline-block w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin mb-2"></div>
-                    <p>Starting camera...</p>
+                    <p className="font-bold">Starting camera...</p>
                   </div>
                 </div>
               )}
             </div>
             
             {/* Instructions */}
-            {!scanResult && isScanning && (
+            {!scanResult && isScanning && !isProcessing && (
               <div className="bg-white p-4 border-t border-[#e7e5e4]">
                 <p className="text-center text-[#57534e] font-medium">
-                  Position QR code inside the frame
+                  📱 Align QR code within the frame
+                </p>
+              </div>
+            )}
+            
+            {isProcessing && !scanResult && (
+              <div className="bg-[#5e6fe5] p-4 border-t border-[#4c5bc5]">
+                <p className="text-center text-white font-bold">
+                  ⏳ Checking in...
                 </p>
               </div>
             )}
@@ -418,17 +460,70 @@ export default function ScannerPage() {
                 </button>
               </div>
             )}
-            <div className="bg-black rounded-2xl overflow-hidden mb-6 relative" style={{ minHeight: '500px' }}>
+            <div className="bg-black rounded-2xl overflow-hidden mb-6 relative flex items-center justify-center" style={{ minHeight: '500px', maxHeight: '70vh' }}>
               <video
                 ref={videoRef}
-                className="w-full h-full object-contain"
-                style={{ maxHeight: '70vh' }}
+                className="absolute inset-0 w-full h-full object-cover"
+                playsInline
+                muted
               />
+              
+              {/* Scanner Overlay */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                {/* Dark overlay with radial cutout */}
+                <div className="absolute inset-0" style={{
+                  background: 'radial-gradient(circle at center, transparent 0%, transparent 200px, rgba(0,0,0,0.7) 260px)'
+                }}></div>
+                
+                {/* Scanning frame */}
+                <div className="relative z-10" style={{ width: '320px', height: '320px' }}>
+                  {/* Corner borders */}
+                  <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-[#5e6fe5]"></div>
+                  <div className="absolute top-0 right-0 w-20 h-20 border-t-4 border-r-4 border-[#5e6fe5]"></div>
+                  <div className="absolute bottom-0 left-0 w-20 h-20 border-b-4 border-l-4 border-[#5e6fe5]"></div>
+                  <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-[#5e6fe5]"></div>
+                  
+                  {/* Center dot */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-4 h-4 bg-[#5e6fe5] rounded-full opacity-50"></div>
+                  </div>
+                  
+                  {/* Scanning line animation */}
+                  {isScanning && !isProcessing && (
+                    <div className="absolute inset-0 overflow-hidden">
+                      <div 
+                        className="w-full h-1 bg-gradient-to-r from-transparent via-[#5e6fe5] to-transparent"
+                        style={{
+                          animation: 'scan 2s ease-in-out infinite',
+                        }}
+                      ></div>
+                    </div>
+                  )}
+                  
+                  {/* Processing indicator */}
+                  {isProcessing && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#5e6fe5]/20 backdrop-blur-sm rounded-lg">
+                      <div className="text-center">
+                        <div className="inline-block w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mb-3"></div>
+                        <p className="text-white font-bold text-lg">Processing...</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Instructions overlay */}
+                {isScanning && !isProcessing && !scanResult && (
+                  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-sm px-6 py-3 rounded-full">
+                    <p className="text-white font-medium text-sm">📱 Align QR code within the frame</p>
+                  </div>
+                )}
+              </div>
+              
               {!isScanning && !cameraError && (
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/70">
                   <div className="text-white text-center">
                     <div className="inline-block w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-lg">Starting camera...</p>
+                    <p className="text-lg font-bold">Starting camera...</p>
                   </div>
                 </div>
               )}
