@@ -43,6 +43,45 @@ export default function ScannerPage() {
   const lastScanRef = useRef<string>("");
   const processingRef = useRef<boolean>(false);
 
+  // Sound effects
+  const playSound = (type: 'success' | 'error' | 'warning') => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    if (type === 'success') {
+      // Pleasant ascending tone for success
+      oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+      oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+      oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.4);
+    } else if (type === 'error') {
+      // Lower buzz for error
+      oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.15);
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.3);
+    } else if (type === 'warning') {
+      // Double beep for already checked in
+      oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4
+      oscillator.frequency.setValueAtTime(440, audioContext.currentTime + 0.15);
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(0, audioContext.currentTime + 0.1);
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + 0.15);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.35);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.35);
+    }
+  };
+
   // Detect mobile
   useEffect(() => {
     setIsMobile(window.innerWidth < 1024);
@@ -144,12 +183,19 @@ export default function ScannerPage() {
                 const data = await response.json();
 
                 if (response.ok) {
+                  playSound('success');
                   setScanResult({
                     success: true,
                     attendee: data.attendee,
                     message: data.message,
                   });
                 } else {
+                  // Check if already checked in
+                  if (response.status === 409) {
+                    playSound('warning');
+                  } else {
+                    playSound('error');
+                  }
                   setScanResult({
                     success: false,
                     error: data.error || "Check-in failed",
@@ -170,6 +216,7 @@ export default function ScannerPage() {
                 }, 3000);
               } catch (error) {
                 console.error("Check-in error:", error);
+                playSound('error');
                 setScanResult({
                   success: false,
                   error: "Network error. Please try again.",
@@ -350,25 +397,36 @@ export default function ScannerPage() {
             )}
 
             {scanResult && (
-              <div className={`p-6 ${scanResult.success ? "bg-green-50" : "bg-red-50"}`}>
-                <div className="text-center">
-                  <div className="text-5xl mb-3">
-                    {scanResult.success ? "✓" : "✗"}
-                  </div>
-                  <h2 className={`text-2xl font-black mb-3 ${scanResult.success ? "text-green-700" : "text-red-700"}`}>
-                    {scanResult.success ? "Checked In!" : scanResult.error}
-                  </h2>
-                  {scanResult.attendee && (
-                    <div className="bg-white rounded-xl p-5 mb-3 border border-[#e7e5e4]">
-                      <h3 className="text-xl font-black text-[#1c1917] mb-2">
-                        {scanResult.attendee.firstName} {scanResult.attendee.lastName}
-                      </h3>
-                      <div className="space-y-1 text-sm text-[#57534e]">
-                        <p>{scanResult.attendee.email}</p>
-                        <p>Class {scanResult.attendee.class}-{scanResult.attendee.section}</p>
-                      </div>
+              <div className={`fixed inset-x-0 top-0 z-50 mx-4 mt-4 animate-slide-down`}>
+                <div className={`rounded-2xl border-2 p-6 backdrop-blur-xl shadow-2xl ${
+                  scanResult.success 
+                    ? "bg-green-500/95 border-green-400" 
+                    : "bg-red-500/95 border-red-400"
+                }`}>
+                  <div className="flex items-start gap-4">
+                    <div className={`text-5xl ${scanResult.success ? "animate-bounce" : "animate-pulse"}`}>
+                      {scanResult.success ? "✓" : "✗"}
                     </div>
-                  )}
+                    <div className="flex-1 text-white">
+                      <h3 className="text-2xl font-black mb-2">
+                        {scanResult.success ? "Checked In!" : scanResult.error}
+                      </h3>
+                      {scanResult.attendee && (
+                        <div className="bg-white/20 rounded-xl p-4 backdrop-blur-sm">
+                          <p className="text-xl font-black mb-1">
+                            {scanResult.attendee.firstName} {scanResult.attendee.lastName}
+                          </p>
+                          <p className="text-sm opacity-90">{scanResult.attendee.email}</p>
+                          <p className="text-sm opacity-90">
+                            Class {scanResult.attendee.class}-{scanResult.attendee.section}
+                          </p>
+                        </div>
+                      )}
+                      {scanResult.message && (
+                        <p className="text-sm mt-2 opacity-90">{scanResult.message}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -530,24 +588,37 @@ export default function ScannerPage() {
             </div>
 
             {scanResult && (
-              <div className={`rounded-2xl p-6 border ${scanResult.success ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
-                <div className="text-center">
-                  <div className="text-5xl mb-3">{scanResult.success ? "✓" : "✗"}</div>
-                  <h2 className={`text-2xl font-black mb-3 ${scanResult.success ? "text-green-700" : "text-red-700"}`}>
-                    {scanResult.success ? "Checked In!" : scanResult.error}
-                  </h2>
-                  {scanResult.attendee && (
-                    <div className="bg-white rounded-xl p-5 mb-3 border border-[#e7e5e4]">
-                      <h3 className="text-xl font-black text-[#1c1917] mb-2">
-                        {scanResult.attendee.firstName} {scanResult.attendee.lastName}
-                      </h3>
-                      <div className="space-y-1 text-sm text-[#57534e] text-left">
-                        <p><span className="font-bold text-[#1c1917]">Email:</span> {scanResult.attendee.email}</p>
-                        <p><span className="font-bold text-[#1c1917]">Phone:</span> {scanResult.attendee.phone}</p>
-                        <p><span className="font-bold text-[#1c1917]">Class:</span> {scanResult.attendee.class}-{scanResult.attendee.section}</p>
-                      </div>
+              <div className={`fixed top-8 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md animate-slide-down`}>
+                <div className={`rounded-2xl border-2 p-8 backdrop-blur-xl shadow-2xl ${
+                  scanResult.success 
+                    ? "bg-green-500/95 border-green-400" 
+                    : "bg-red-500/95 border-red-400"
+                }`}>
+                  <div className="flex items-start gap-5">
+                    <div className={`text-6xl ${scanResult.success ? "animate-bounce" : "animate-pulse"}`}>
+                      {scanResult.success ? "✓" : "✗"}
                     </div>
-                  )}
+                    <div className="flex-1 text-white">
+                      <h3 className="text-3xl font-black mb-3">
+                        {scanResult.success ? "Checked In!" : scanResult.error}
+                      </h3>
+                      {scanResult.attendee && (
+                        <div className="bg-white/20 rounded-xl p-5 backdrop-blur-sm">
+                          <p className="text-2xl font-black mb-2">
+                            {scanResult.attendee.firstName} {scanResult.attendee.lastName}
+                          </p>
+                          <div className="space-y-1 text-sm opacity-90">
+                            <p><span className="font-bold">Email:</span> {scanResult.attendee.email}</p>
+                            <p><span className="font-bold">Phone:</span> {scanResult.attendee.phone}</p>
+                            <p><span className="font-bold">Class:</span> {scanResult.attendee.class}-{scanResult.attendee.section}</p>
+                          </div>
+                        </div>
+                      )}
+                      {scanResult.message && (
+                        <p className="text-sm mt-3 opacity-90">{scanResult.message}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
