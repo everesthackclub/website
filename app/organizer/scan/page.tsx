@@ -38,6 +38,7 @@ export default function ScannerPage() {
   const [cameraError, setCameraError] = useState<string>("");
   const [isMobile, setIsMobile] = useState(false);
   const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   // Detect mobile
   useEffect(() => {
@@ -106,16 +107,21 @@ export default function ScannerPage() {
 
         setIsScanning(true);
 
+        // Store the stream for cleanup
+        const videoElement = videoRef.current;
+        if (!videoElement) return;
+
         await codeReader.decodeFromVideoDevice(
           selectedDevice.deviceId,
-          videoRef.current,
+          videoElement,
           async (result, error) => {
             if (result) {
               const ticketToken = result.getText();
               
               // Pause scanning temporarily
-              if (codeReaderRef.current) {
-                codeReaderRef.current.stopStreams();
+              if (videoRef.current?.srcObject) {
+                const stream = videoRef.current.srcObject as MediaStream;
+                stream.getTracks().forEach(track => track.stop());
               }
               setIsScanning(false);
 
@@ -176,23 +182,17 @@ export default function ScannerPage() {
     startScanning();
 
     return () => {
-      if (codeReaderRef.current) {
-        try {
-          codeReaderRef.current.stopStreams();
-        } catch (e) {
-          console.log("Failed to stop streams:", e);
-        }
+      if (videoRef.current?.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
       }
     };
   }, [isAuthenticated, selectedEventId, isScanning]);
 
   const handleLogout = async () => {
-    if (codeReaderRef.current) {
-      try {
-        codeReaderRef.current.stopStreams();
-      } catch (e) {
-        console.log("Failed to stop streams:", e);
-      }
+    if (videoRef.current?.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach(track => track.stop());
     }
     try {
       await fetch("/api/organizer/logout", { method: "POST" });
@@ -222,12 +222,9 @@ export default function ScannerPage() {
           <select
             value={selectedEventId}
             onChange={(e) => {
-              if (codeReaderRef.current) {
-                try {
-                  codeReaderRef.current.stopStreams();
-                } catch (e) {
-                  console.log("Failed to stop streams:", e);
-                }
+              if (videoRef.current?.srcObject) {
+                const stream = videoRef.current.srcObject as MediaStream;
+                stream.getTracks().forEach(track => track.stop());
               }
               setSelectedEventId(e.target.value);
               setIsScanning(false);
@@ -390,8 +387,9 @@ export default function ScannerPage() {
           <select
             value={selectedEventId}
             onChange={(e) => {
-              if (codeReaderRef.current) {
-                codeReaderRef.current.reset();
+              if (videoRef.current?.srcObject) {
+                const stream = videoRef.current.srcObject as MediaStream;
+                stream.getTracks().forEach(track => track.stop());
               }
               setSelectedEventId(e.target.value);
               setIsScanning(false);
