@@ -81,7 +81,9 @@ export default function Navbar() {
   const links = [
     { href: "/#about",  label: "About"  },
     { href: "/events",  label: "Events" },
+    { href: "/dashboard", label: "My Ticket" },
     { href: "/#faq",    label: "FAQ"    },
+    { href: "/contact", label: "Contact" },
   ];
 
   const isLinkActive = (href: string) => {
@@ -154,17 +156,6 @@ export default function Navbar() {
               })}
               <div className="w-[1px] h-4 bg-[var(--border)] mx-2" />
               <ThemeToggle />
-              <Link
-                href="/contact"
-                className={[
-                  "ml-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-150 active:scale-95",
-                  pathname === "/contact"
-                    ? "bg-[var(--red)] text-white"
-                    : "bg-[var(--text-primary)] text-[var(--text-invert)] hover:opacity-90",
-                ].join(" ")}
-              >
-                Contact
-              </Link>
             </div>
 
             {/* Mobile: theme toggle + hamburger */}
@@ -235,13 +226,9 @@ export default function Navbar() {
             })}
           </div>
           <div className="px-3 pb-3">
-            <Link
-              href="/contact"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center justify-center w-full px-4 py-3 text-sm font-semibold rounded-xl bg-[var(--text-primary)] text-[var(--text-invert)] hover:opacity-90 transition-opacity"
-            >
-              Contact
-            </Link>
+            <div className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider mb-2 px-4">
+              Theme
+            </div>
           </div>
         </div>
       </div>

@@ -1,19 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import NavMenu from "../components/NavMenu";
+import { prisma } from "@/app/lib/prisma";
 
 export const metadata = {
   title: 'Events & Announcements - Everest Hack Club',
   description: 'Check out upcoming events, workshops, and announcements from Everest Hack Club',
-};
-
-// Next scheduled session
-const event = {
-  title: 'Weekly Hack Session',
-  date: 'Friday, September 4',
-  time: '9:00 AM - 11:00 AM',
-  location: 'Everest College, Biratnagar',
-  description: 'Our first hack session of the season. We kick off with onboarding, get everyone set up, then spend the rest of the morning building. Come as you are - beginners are exactly who this is for.',
 };
 
 // Shown in the expandable "what to expect" panel on the event card
@@ -32,7 +24,11 @@ const eventDetails = [
   },
 ];
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const activeEvents = await prisma.event.findMany({
+    where: { isActive: true },
+    orderBy: { date: 'asc' }
+  });
   return (
     <div className="min-h-screen bg-grid">
       {/* Top Bar */}
@@ -64,82 +60,109 @@ export default function EventsPage() {
         </div>
       </div>
 
-      {/* Event Card */}
+      {/* Event Cards */}
       <section className="px-6 sm:px-12 py-16 bg-white">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-[#c3e6f3] to-[#abc8f4] border-4 border-[#473b47] rounded-2xl overflow-hidden shadow-xl">
-            {/* Event Details */}
-            <div className="p-8 sm:p-12">
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <span className="px-4 py-2 bg-[#e11d48] text-white rounded-full text-sm font-bold uppercase">
-                  next session
-                </span>
-                <span className="px-4 py-2 bg-[#65c3b5] text-white rounded-full text-sm font-bold uppercase">
-                  beginners welcome
-                </span>
-              </div>
-
-              <h2 className="text-4xl sm:text-5xl font-black text-[#473b47] mb-6">
-                {event.title}
-              </h2>
-              
-              <div className="space-y-4 mb-8 text-lg text-[#473b47]">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">📅</span>
-                  <span className="font-bold">{event.date}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">🕐</span>
-                  <span className="font-bold">{event.time}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">📍</span>
-                  <span className="font-bold">{event.location}</span>
-                </div>
-              </div>
-
-              <p className="text-[#473b47] text-lg leading-relaxed mb-8">
-                {event.description}
+          {activeEvents.length === 0 ? (
+            <div className="text-center p-12 bg-gradient-to-br from-[#f3faff] to-[#e8f3ff] rounded-2xl border-4 border-[#473b47]">
+              <h3 className="text-2xl font-black text-[#473b47] mb-2">
+                No active events right now
+              </h3>
+              <p className="text-[#473b47]">
+                Check back regularly for new workshops, hackathons, and community events.
               </p>
-
-              {/* Expandable details */}
-              <div className="space-y-3 mb-8">
-                {eventDetails.map((detail, index) => (
-                  <details
-                    key={index}
-                    className="group bg-white border-4 border-[#473b47] rounded-xl overflow-hidden"
-                  >
-                    <summary className="cursor-pointer p-4 sm:p-5 font-bold text-base sm:text-lg text-[#473b47] hover:bg-[#f3faff] transition-colors flex justify-between items-center gap-4">
-                      <span>{detail.q}</span>
-                      <span className="text-xl group-open:rotate-180 transition-transform shrink-0">
-                        ▼
-                      </span>
-                    </summary>
-                    <div className="px-4 sm:px-5 pb-5 pt-1 text-[#473b47] leading-relaxed border-t-4 border-[#f3faff]">
-                      {detail.a}
-                    </div>
-                  </details>
-                ))}
-              </div>
-
-              <Link
-                href="/"
-                className="inline-block px-8 py-4 bg-[#5e6fe5] text-white font-bold text-xl rounded-xl hover:bg-[#5167dd] transition-colors"
-              >
-                Join Us on September 4
-              </Link>
             </div>
-          </div>
+          ) : (
+            <div className="space-y-8">
+              {activeEvents.map((event) => (
+                <div key={event.id} className="bg-gradient-to-br from-[#c3e6f3] to-[#abc8f4] border-4 border-[#473b47] rounded-2xl overflow-hidden shadow-xl">
+                  {/* Event Details */}
+                  <div className="p-8 sm:p-12">
+                    <div className="flex flex-wrap items-center gap-3 mb-6">
+                      <span className="px-4 py-2 bg-[#e11d48] text-white rounded-full text-sm font-bold uppercase">
+                        upcoming event
+                      </span>
+                      <span className="px-4 py-2 bg-[#65c3b5] text-white rounded-full text-sm font-bold uppercase">
+                        beginners welcome
+                      </span>
+                    </div>
+
+                    <h2 className="text-4xl sm:text-5xl font-black text-[#473b47] mb-6">
+                      {event.name}
+                    </h2>
+                    
+                    <div className="space-y-4 mb-8 text-lg text-[#473b47]">
+                      <div className="flex items-center gap-3">
+                        <span className="w-6 h-6 bg-[#ec3750] rounded-full flex-shrink-0"></span>
+                        <span className="font-bold">{new Date(event.date).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="w-6 h-6 bg-[#5e6fe5] rounded-full flex-shrink-0"></span>
+                        <span className="font-bold">{event.time}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="w-6 h-6 bg-[#65c3b5] rounded-full flex-shrink-0"></span>
+                        <span className="font-bold">{event.location}</span>
+                      </div>
+                    </div>
+
+                    {event.description && (
+                      <p className="text-[#473b47] text-lg leading-relaxed mb-8">
+                        {event.description}
+                      </p>
+                    )}
+
+                    {/* Expandable details */}
+                    <div className="space-y-3 mb-8">
+                      {eventDetails.map((detail, index) => (
+                        <details
+                          key={index}
+                          className="group bg-white border-4 border-[#473b47] rounded-xl overflow-hidden"
+                        >
+                          <summary className="cursor-pointer p-4 sm:p-5 font-bold text-base sm:text-lg text-[#473b47] hover:bg-[#f3faff] transition-colors flex justify-between items-center gap-4">
+                            <span>{detail.q}</span>
+                            <span className="text-xl group-open:rotate-180 transition-transform shrink-0">
+                              ▼
+                            </span>
+                          </summary>
+                          <div className="px-4 sm:px-5 pb-5 pt-1 text-[#473b47] leading-relaxed border-t-4 border-[#f3faff]">
+                            {detail.a}
+                          </div>
+                        </details>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-wrap gap-4">
+                      <Link
+                        href={`/events/${event.id}/rsvp`}
+                        className="inline-block px-8 py-4 bg-[#5e6fe5] text-white font-bold text-xl rounded-xl hover:bg-[#5167dd] transition-colors"
+                      >
+                        RSVP Now
+                      </Link>
+                      <Link
+                        href="/"
+                        className="inline-block px-8 py-4 bg-[#65c3b5] text-white font-bold text-xl rounded-xl hover:bg-[#5ab8a8] transition-colors"
+                      >
+                        Back to Home
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* More events coming soon */}
-          <div className="mt-12 text-center p-12 bg-gradient-to-br from-[#f3faff] to-[#e8f3ff] rounded-2xl border-4 border-[#473b47]">
-            <h3 className="text-2xl font-black text-[#473b47] mb-2">
-              More events coming soon!
-            </h3>
-            <p className="text-[#473b47]">
-              Check back regularly for new workshops, hackathons, and community events.
-            </p>
-          </div>
+          {activeEvents.length > 0 && (
+            <div className="mt-12 text-center p-12 bg-gradient-to-br from-[#f3faff] to-[#e8f3ff] rounded-2xl border-4 border-[#473b47]">
+              <h3 className="text-2xl font-black text-[#473b47] mb-2">
+                More events coming soon!
+              </h3>
+              <p className="text-[#473b47]">
+                Check back regularly for new workshops, hackathons, and community events.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 

@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  date        DateTime
+  time        String
+  location    String
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  attendees   Attendee[]
+}
+
+model Attendee {
+  id          String    @id @default(cuid())
+  firstName   String
+  lastName    String
+  email       String
+  phone       String
+  class       String
+  section     String
+  ticketToken String    @unique @default(uuid())
+  isCheckedIn Boolean   @default(false)
+  checkedInAt DateTime?
+  checkedInBy String?   // Organizer ID who scanned them
+  createdAt   DateTime  @default(now())
+  
+  eventId     String
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  @@unique([email, eventId]) // Same person can register for multiple events
+  @@index([eventId])
+  @@index([isCheckedIn])
+}
+
+model Organizer {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("organizer") // organizer, admin
+  createdAt    DateTime @default(now())
+}

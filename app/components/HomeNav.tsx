@@ -32,10 +32,10 @@ export default function HomeNav() {
           events
         </Link>
         <Link
-          href="/posters"
+          href="/dashboard"
           className="text-base text-[#473b47] font-bold hover:text-[#5167dd] transition-colors"
         >
-          posters
+          my ticket
         </Link>
         <Link
           href="/contact"
@@ -86,11 +86,11 @@ export default function HomeNav() {
               events
             </Link>
             <Link
-              href="/posters"
+              href="/dashboard"
               onClick={() => setIsMenuOpen(false)}
               className="px-4 py-3 text-[#473b47] font-bold rounded-lg hover:bg-[#f0f0f0] transition-colors"
             >
-              posters
+              my ticket
             </Link>
             <Link
               href="/contact"
