@@ -15,7 +15,7 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            eventDate: true,
+            date: true,
             time: true,
             location: true
           }
