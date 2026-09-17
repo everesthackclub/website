@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { BrowserQRCodeReader } from "@zxing/browser";
 
 interface Event {
   id: string;
@@ -28,13 +28,16 @@ interface ScanResult {
 
 export default function ScannerPage() {
   const router = useRouter();
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [isScanning, setIsScanning] = useState(false);
+  const [cameraError, setCameraError] = useState<string>("");
   const [isMobile, setIsMobile] = useState(false);
+  const codeReaderRef = useRef<BrowserQRCodeReader | null>(null);
 
   // Detect mobile
   useEffect(() => {
@@ -79,89 +82,118 @@ export default function ScannerPage() {
 
   // Initialize scanner
   useEffect(() => {
-    if (!isAuthenticated || isScanning || !selectedEventId) return;
+    if (!isAuthenticated || !selectedEventId || !videoRef.current || isScanning) return;
 
-    let scanner: Html5QrcodeScanner | null = null;
+    const startScanning = async () => {
+      try {
+        setCameraError("");
+        const codeReader = new BrowserQRCodeReader();
+        codeReaderRef.current = codeReader;
 
-    const initScanner = () => {
-      scanner = new Html5QrcodeScanner(
-        "reader",
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-          aspectRatio: 1.0,
-        },
-        false
-      );
-
-      scanner.render(
-        async (decodedText) => {
-          if (scanner) scanner.pause(true);
-
-          try {
-            const response = await fetch("/api/check-in", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ 
-                ticketToken: decodedText,
-                eventId: selectedEventId 
-              }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-              setScanResult({
-                success: true,
-                attendee: data.attendee,
-                message: data.message,
-              });
-            } else {
-              setScanResult({
-                success: false,
-                error: data.error || "Check-in failed",
-                message: data.message,
-                attendee: data.attendee,
-              });
-            }
-
-            setTimeout(() => {
-              setScanResult(null);
-              if (scanner) scanner.resume();
-            }, 3000);
-          } catch (error) {
-            console.error("Check-in error:", error);
-            setScanResult({
-              success: false,
-              error: "Network error. Please try again.",
-            });
-
-            setTimeout(() => {
-              setScanResult(null);
-              if (scanner) scanner.resume();
-            }, 3000);
-          }
-        },
-        (errorMessage) => {
-          console.debug("QR scan error:", errorMessage);
+        // Get available devices
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        
+        if (videoDevices.length === 0) {
+          setCameraError("No camera found on this device");
+          return;
         }
-      );
 
-      setIsScanning(true);
-    };
+        // Use back camera on mobile if available
+        const selectedDevice = videoDevices.find(device => 
+          device.label.toLowerCase().includes('back')
+        ) || videoDevices[0];
 
-    initScanner();
+        setIsScanning(true);
 
-    return () => {
-      if (scanner) {
-        scanner.clear().catch((error) => {
-          console.error("Failed to clear scanner:", error);
-        });
+        await codeReader.decodeFromVideoDevice(
+          selectedDevice.deviceId,
+          videoRef.current,
+          async (result, error) => {
+            if (result) {
+              const ticketToken = result.getText();
+              
+              // Pause scanning temporarily
+              if (codeReaderRef.current) {
+                codeReaderRef.current.stopStreams();
+              }
+              setIsScanning(false);
+
+              try {
+                const response = await fetch("/api/check-in", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ 
+                    ticketToken,
+                    eventId: selectedEventId 
+                  }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                  setScanResult({
+                    success: true,
+                    attendee: data.attendee,
+                    message: data.message,
+                  });
+                } else {
+                  setScanResult({
+                    success: false,
+                    error: data.error || "Check-in failed",
+                    message: data.message,
+                    attendee: data.attendee,
+                  });
+                }
+
+                // Resume scanning after 3 seconds
+                setTimeout(() => {
+                  setScanResult(null);
+                  setIsScanning(false); // This will trigger restart
+                }, 3000);
+              } catch (error) {
+                console.error("Check-in error:", error);
+                setScanResult({
+                  success: false,
+                  error: "Network error. Please try again.",
+                });
+
+                setTimeout(() => {
+                  setScanResult(null);
+                  setIsScanning(false);
+                }, 3000);
+              }
+            }
+          }
+        );
+      } catch (error: any) {
+        console.error("Scanner error:", error);
+        setCameraError(error?.message || "Failed to start camera. Please check permissions.");
+        setIsScanning(false);
       }
     };
-  }, [isAuthenticated, isScanning, selectedEventId]);
+
+    startScanning();
+
+    return () => {
+      if (codeReaderRef.current) {
+        try {
+          codeReaderRef.current.stopStreams();
+        } catch (e) {
+          console.log("Failed to stop streams:", e);
+        }
+      }
+    };
+  }, [isAuthenticated, selectedEventId, isScanning]);
 
   const handleLogout = async () => {
+    if (codeReaderRef.current) {
+      try {
+        codeReaderRef.current.stopStreams();
+      } catch (e) {
+        console.log("Failed to stop streams:", e);
+      }
+    }
     try {
       await fetch("/api/organizer/logout", { method: "POST" });
       router.push("/organizer/login");
@@ -190,6 +222,13 @@ export default function ScannerPage() {
           <select
             value={selectedEventId}
             onChange={(e) => {
+              if (codeReaderRef.current) {
+                try {
+                  codeReaderRef.current.stopStreams();
+                } catch (e) {
+                  console.log("Failed to stop streams:", e);
+                }
+              }
               setSelectedEventId(e.target.value);
               setIsScanning(false);
             }}
@@ -206,9 +245,70 @@ export default function ScannerPage() {
 
         {selectedEventId && (
           <div className="flex-1 flex flex-col">
-            <div className="bg-white border-b border-[#e7e5e4]">
-              <div id="reader" className="w-full"></div>
+            {cameraError && (
+              <div className="p-4 bg-red-50 border-b border-red-200">
+                <p className="text-red-700 font-bold text-center">{cameraError}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="mt-2 w-full px-4 py-2 bg-red-600 text-white rounded-lg font-bold"
+                >
+                  Reload Page
+                </button>
+              </div>
+            )}
+            
+            {/* Camera Feed with Scanner Frame */}
+            <div className="relative bg-black flex items-center justify-center flex-1" style={{ minHeight: '60vh' }}>
+              <video
+                ref={videoRef}
+                className="w-full h-full object-cover"
+              />
+              
+              {/* Scanner Overlay */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* Dark overlay with cutout */}
+                <div className="absolute inset-0 bg-black/50"></div>
+                
+                {/* Scanning frame */}
+                <div className="relative z-10" style={{ width: '280px', height: '280px' }}>
+                  {/* Corner borders */}
+                  <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-white"></div>
+                  <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-white"></div>
+                  <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-white"></div>
+                  <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-white"></div>
+                  
+                  {/* Scanning line animation */}
+                  {isScanning && (
+                    <div className="absolute inset-0 overflow-hidden">
+                      <div 
+                        className="w-full h-1 bg-gradient-to-r from-transparent via-[#5e6fe5] to-transparent animate-scan"
+                        style={{
+                          animation: 'scan 2s ease-in-out infinite',
+                        }}
+                      ></div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {!isScanning && !cameraError && (
+                <div className="absolute inset-0 flex items-center justify-center z-20">
+                  <div className="text-white text-center bg-black/70 px-6 py-4 rounded-2xl">
+                    <div className="inline-block w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin mb-2"></div>
+                    <p>Starting camera...</p>
+                  </div>
+                </div>
+              )}
             </div>
+            
+            {/* Instructions */}
+            {!scanResult && isScanning && (
+              <div className="bg-white p-4 border-t border-[#e7e5e4]">
+                <p className="text-center text-[#57534e] font-medium">
+                  Position QR code inside the frame
+                </p>
+              </div>
+            )}
 
             {scanResult && (
               <div className={`p-6 ${scanResult.success ? "bg-green-50" : "bg-red-50"}`}>
@@ -290,6 +390,9 @@ export default function ScannerPage() {
           <select
             value={selectedEventId}
             onChange={(e) => {
+              if (codeReaderRef.current) {
+                codeReaderRef.current.reset();
+              }
               setSelectedEventId(e.target.value);
               setIsScanning(false);
             }}
@@ -306,8 +409,31 @@ export default function ScannerPage() {
 
         {selectedEventId && (
           <>
-            <div className="bg-white rounded-2xl overflow-hidden border border-[#e7e5e4] mb-6">
-              <div id="reader" className="w-full"></div>
+            {cameraError && (
+              <div className="p-6 bg-red-50 border border-red-200 rounded-2xl mb-6">
+                <p className="text-red-700 font-bold text-center mb-3">{cameraError}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700"
+                >
+                  Reload Page
+                </button>
+              </div>
+            )}
+            <div className="bg-black rounded-2xl overflow-hidden mb-6 relative" style={{ minHeight: '500px' }}>
+              <video
+                ref={videoRef}
+                className="w-full h-full object-contain"
+                style={{ maxHeight: '70vh' }}
+              />
+              {!isScanning && !cameraError && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-white text-center">
+                    <div className="inline-block w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p className="text-lg">Starting camera...</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {scanResult && (
