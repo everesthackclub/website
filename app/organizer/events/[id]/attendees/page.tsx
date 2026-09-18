@@ -35,6 +35,22 @@ export default function EventAttendeesPage({ params }: { params: Promise<{ id: s
   const [isLoading, setIsLoading] = useState(true);
   const [actioningAttendeeId, setActioningAttendeeId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter attendees based on search query
+  const filteredAttendees = attendees.filter((attendee) => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    return (
+      attendee.firstName.toLowerCase().includes(query) ||
+      attendee.lastName.toLowerCase().includes(query) ||
+      attendee.email.toLowerCase().includes(query) ||
+      attendee.phone.toLowerCase().includes(query) ||
+      attendee.class.toLowerCase().includes(query) ||
+      attendee.section.toLowerCase().includes(query)
+    );
+  });
 
   useEffect(() => {
     const init = async () => {
@@ -137,13 +153,34 @@ export default function EventAttendeesPage({ params }: { params: Promise<{ id: s
             </Link>
           </div>
 
-          <div className="mb-8">
-            <h1 className="text-3xl font-black text-[#1c1917] mb-2">
-              Attendees: {event.name}
-            </h1>
-            <p className="text-[#57534e]">
-              {new Date(event.date).toLocaleDateString()} • {event.time}
-            </p>
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-black text-[#1c1917] mb-2">
+                Attendees: {event.name}
+              </h1>
+              <p className="text-[#57534e]">
+                {new Date(event.date).toLocaleDateString()} • {event.time}
+              </p>
+            </div>
+            
+            {/* Search Bar */}
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search attendees..."
+                className="w-64 px-4 py-2 pr-10 border-2 border-[#e7e5e4] rounded-lg text-[#1c1917] placeholder:text-[#a8a29e] focus:outline-none focus:ring-2 focus:ring-[#5e6fe5] focus:border-transparent"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#57534e] hover:text-[#1c1917]"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Stats */}
@@ -166,9 +203,11 @@ export default function EventAttendeesPage({ params }: { params: Promise<{ id: s
 
           {/* Table */}
           <div className="bg-white rounded-xl overflow-hidden border border-[#e7e5e4]">
-            {attendees.length === 0 ? (
+            {filteredAttendees.length === 0 ? (
               <div className="p-12 text-center">
-                <p className="text-[#57534e]">No attendees yet</p>
+                <p className="text-[#57534e]">
+                  {searchQuery ? `No attendees found matching "${searchQuery}"` : "No attendees yet"}
+                </p>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -181,12 +220,12 @@ export default function EventAttendeesPage({ params }: { params: Promise<{ id: s
                       <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Phone</th>
                       <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Class</th>
                       <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Status</th>
-                      <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Time</th>
+                      <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Check-in Time</th>
                       <th className="px-4 py-3 text-left font-bold text-[#1c1917]">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {attendees.map((attendee, index) => (
+                    {filteredAttendees.map((attendee, index) => (
                       <tr
                         key={attendee.id}
                         className={`border-b border-[#f5f5f4] ${
@@ -207,13 +246,9 @@ export default function EventAttendeesPage({ params }: { params: Promise<{ id: s
                             <span className="inline-block px-2.5 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
                               Checked In
                             </span>
-                          ) : attendee.isApproved ? (
-                            <span className="inline-block px-2.5 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
-                              Approved
-                            </span>
                           ) : (
-                            <span className="inline-block px-2.5 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">
-                              Pending
+                            <span className="inline-block px-2.5 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
+                              Registered
                             </span>
                           )}
                         </td>

@@ -21,14 +21,18 @@ export async function GET(
           select: { attendees: true }
         },
         attendees: {
-          take: 10,
           orderBy: { createdAt: "desc" },
           select: {
             id: true,
             firstName: true,
             lastName: true,
             email: true,
+            phone: true,
+            class: true,
+            section: true,
             isCheckedIn: true,
+            isApproved: true,
+            checkedInAt: true,
             createdAt: true
           }
         }

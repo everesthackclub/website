@@ -279,7 +279,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
               </p>
             ) : (
               <div className="space-y-3">
-                {filteredAttendees.map((attendee) => (
+                {filteredAttendees.slice(0, 10).map((attendee) => (
                   <div key={attendee.id} className="flex items-center justify-between p-4 bg-[#fafaf9] rounded-lg">
                     <div className="flex-1">
                       <p className="font-bold text-[#1c1917]">
@@ -295,13 +295,9 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                           <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
                             Checked In
                           </span>
-                        ) : attendee.isApproved ? (
-                          <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
-                            Approved
-                          </span>
                         ) : (
-                          <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">
-                            Pending
+                          <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
+                            Registered
                           </span>
                         )}
                       </div>
