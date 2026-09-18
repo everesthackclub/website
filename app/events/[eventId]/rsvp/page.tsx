@@ -253,7 +253,7 @@ export default function EventRSVPPage({ params }: { params: Promise<{ eventId: s
             </button>
 
             <p className="text-xs text-center text-[#57534e]">
-              You'll receive a QR code ticket via email
+              You will receive your ticket after completing this form
             </p>
           </form>
         </div>
