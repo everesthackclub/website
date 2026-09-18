@@ -37,6 +37,19 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
   const [isToggling, setIsToggling] = useState(false);
   const [actioningAttendeeId, setActioningAttendeeId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter attendees based on search query
+  const filteredAttendees = event?.attendees.filter((attendee) => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    return (
+      attendee.firstName.toLowerCase().includes(query) ||
+      attendee.lastName.toLowerCase().includes(query) ||
+      attendee.email.toLowerCase().includes(query)
+    );
+  }) || [];
 
   useEffect(() => {
     const init = async () => {
@@ -235,14 +248,38 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
 
           {/* Recent Attendees */}
           <div className="bg-white rounded-xl border border-[#e7e5e4] p-6">
-            <h2 className="text-2xl font-black text-[#1c1917] mb-4">
-              Recent Registrations
-            </h2>
-            {event.attendees.length === 0 ? (
-              <p className="text-[#57534e]">No registrations yet</p>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-black text-[#1c1917]">
+                Recent Registrations
+              </h2>
+              
+              {/* Search Bar */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search members..."
+                  className="w-64 px-4 py-2 pr-10 border-2 border-[#e7e5e4] rounded-lg text-[#1c1917] placeholder:text-[#a8a29e] focus:outline-none focus:ring-2 focus:ring-[#5e6fe5] focus:border-transparent"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#57534e] hover:text-[#1c1917]"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            {filteredAttendees.length === 0 ? (
+              <p className="text-[#57534e]">
+                {searchQuery ? `No members found matching "${searchQuery}"` : "No registrations yet"}
+              </p>
             ) : (
               <div className="space-y-3">
-                {event.attendees.map((attendee) => (
+                {filteredAttendees.map((attendee) => (
                   <div key={attendee.id} className="flex items-center justify-between p-4 bg-[#fafaf9] rounded-lg">
                     <div className="flex-1">
                       <p className="font-bold text-[#1c1917]">

@@ -34,8 +34,14 @@ export default function OrganizerLoginPage() {
         return;
       }
 
-      // Success - redirect to dashboard
-      router.push("/organizer/dashboard");
+      // Success - redirect based on device type
+      // Mobile devices go to scanner, desktop to dashboard
+      const isMobile = window.innerWidth < 1024;
+      if (isMobile) {
+        router.push("/organizer/scan");
+      } else {
+        router.push("/organizer/dashboard");
+      }
     } catch (err) {
       console.error("Login error:", err);
       setError("Network error. Please try again.");

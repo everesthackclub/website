@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -34,6 +34,17 @@ export default function DashboardPage() {
   const [organizer, setOrganizer] = useState<Organizer | null>(null);
   const [stats, setStats] = useState<Stats>({ totalEvents: 0, activeEvents: 0, totalAttendees: 0, checkedInCount: 0 });
   const [activeEvent, setActiveEvent] = useState<ActiveEvent | null>(null);
+
+  // Memoize the first name extraction
+  const firstName = useMemo(() => {
+    return organizer?.name?.split(' ')[0] || 'there';
+  }, [organizer?.name]);
+
+  // Memoize formatted date
+  const formattedDate = useMemo(() => {
+    if (!activeEvent?.date) return '';
+    return new Date(activeEvent.date).toLocaleDateString();
+  }, [activeEvent?.date]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -90,7 +101,7 @@ export default function DashboardPage() {
       <div className="p-6 lg:p-8 max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl lg:text-4xl font-black text-[#1c1917] mb-2">
-            Welcome back, {organizer?.name?.split(' ')[0]}!
+            Welcome back, {firstName}!
           </h1>
           <p className="text-[#57534e]">Here's what's happening with your events</p>
         </div>
@@ -131,7 +142,7 @@ export default function DashboardPage() {
               <div>
                 <p className="text-sm text-[#57534e]">Date & Time</p>
                 <p className="font-bold text-[#1c1917]">
-                  {new Date(activeEvent.date).toLocaleDateString()} • {activeEvent.time}
+                  {formattedDate} • {activeEvent.time}
                 </p>
               </div>
               <div>
@@ -165,27 +176,6 @@ export default function DashboardPage() {
             </Link>
           </div>
         )}
-
-        <div className="lg:hidden grid grid-cols-3 gap-3">
-          <Link
-            href="/organizer/hackers"
-            className="px-4 py-3 bg-white border border-[#e7e5e4] rounded-lg text-center font-bold text-[#1c1917]"
-          >
-            👥 Hackers
-          </Link>
-          <Link
-            href="/organizer/events"
-            className="px-4 py-3 bg-white border border-[#e7e5e4] rounded-lg text-center font-bold text-[#1c1917]"
-          >
-            📅 Events
-          </Link>
-          <Link
-            href="/organizer/scan"
-            className="px-4 py-3 bg-[#ec3750] text-white rounded-lg text-center font-bold"
-          >
-            📱 Scan
-          </Link>
-        </div>
       </div>
     </main>
   );

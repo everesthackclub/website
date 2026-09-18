@@ -372,7 +372,7 @@ export default function ScannerPage() {
             {!scanResult && isScanning && !isProcessing && (
               <div className="bg-white p-4 border-t border-[#e7e5e4]">
                 <p className="text-center text-[#57534e] font-medium">
-                  📱 Align QR code within the frame
+                  Align QR code within the frame
                 </p>
               </div>
             )}
@@ -380,7 +380,7 @@ export default function ScannerPage() {
             {isProcessing && !scanResult && (
               <div className="bg-[#5e6fe5] p-4 border-t border-[#4c5bc5]">
                 <p className="text-center text-white font-bold">
-                  ⏳ Checking in...
+                  Checking in...
                 </p>
               </div>
             )}
@@ -412,18 +412,6 @@ export default function ScannerPage() {
             )}
           </div>
         )}
-
-        <div className="grid grid-cols-3 gap-3 p-4 bg-white border-t border-[#e7e5e4]">
-          <Link href="/organizer/dashboard" className="px-4 py-3 bg-white border border-[#e7e5e4] rounded-lg text-center font-bold text-[#1c1917]">
-            Dashboard
-          </Link>
-          <Link href="/organizer/hackers" className="px-4 py-3 bg-white border border-[#e7e5e4] rounded-lg text-center font-bold text-[#1c1917]">
-            Hackers
-          </Link>
-          <Link href="/organizer/events" className="px-4 py-3 bg-white border border-[#e7e5e4] rounded-lg text-center font-bold text-[#1c1917]">
-            Events
-          </Link>
-        </div>
       </div>
     );
   }
@@ -523,7 +511,7 @@ export default function ScannerPage() {
                 {/* Instructions overlay */}
                 {isScanning && !isProcessing && !scanResult && (
                   <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-sm px-6 py-3 rounded-full">
-                    <p className="text-white font-medium text-sm">📱 Align QR code within the frame</p>
+                    <p className="text-white font-medium text-sm">Align QR code within the frame</p>
                   </div>
                 )}
               </div>

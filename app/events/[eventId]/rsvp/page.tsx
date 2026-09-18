@@ -123,22 +123,25 @@ export default function EventRSVPPage({ params }: { params: Promise<{ eventId: s
 
   return (
     <div className="min-h-screen bg-[#fafaf9]">
-      <div className="max-w-2xl mx-auto px-6 py-12">
-        <div className="mb-8 text-center">
-          <Link href="/events" className="text-[#57534e] hover:text-[#1c1917] font-medium mb-4 inline-block">
-            ← Back to Events
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div className="mb-6 sm:mb-8">
+          <Link href="/events" className="inline-flex items-center gap-2 text-[#57534e] hover:text-[#1c1917] font-medium mb-4 transition-colors">
+            <span>←</span> Back to Events
           </Link>
-          <h1 className="text-4xl font-black text-[#1c1917] mb-2">
-            RSVP for {event.name}
-          </h1>
+          <div className="text-center">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#1c1917] mb-2">
+              {event.name}
+            </h1>
+            <p className="text-[#57534e] text-sm sm:text-base">Fill out the form below to reserve your spot</p>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl p-8 border border-[#e7e5e4]">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid sm:grid-cols-2 gap-6">
+        <div className="bg-white rounded-2xl border-2 border-[#e7e5e4] p-6 sm:p-8">
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label htmlFor="firstName" className="block text-sm font-bold text-[#1c1917] mb-2">
-                  First Name
+                  First Name <span className="text-[#ec3750]">*</span>
                 </label>
                 <input
                   type="text"
@@ -146,14 +149,15 @@ export default function EventRSVPPage({ params }: { params: Promise<{ eventId: s
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
+                  placeholder="John"
                   required
-                  className="w-full px-4 py-3 border border-[#e7e5e4] rounded-lg text-[#1c1917] focus:outline-none focus:ring-2 focus:ring-[#ec3750]"
+                  className="w-full px-4 py-3 border-2 border-[#e7e5e4] rounded-lg text-[#1c1917] placeholder:text-[#a8a29e] focus:outline-none focus:ring-2 focus:ring-[#5e6fe5] focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
                 <label htmlFor="lastName" className="block text-sm font-bold text-[#1c1917] mb-2">
-                  Last Name
+                  Last Name <span className="text-[#ec3750]">*</span>
                 </label>
                 <input
                   type="text"
@@ -161,15 +165,16 @@ export default function EventRSVPPage({ params }: { params: Promise<{ eventId: s
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
+                  placeholder="Doe"
                   required
-                  className="w-full px-4 py-3 border border-[#e7e5e4] rounded-lg text-[#1c1917] focus:outline-none focus:ring-2 focus:ring-[#ec3750]"
+                  className="w-full px-4 py-3 border-2 border-[#e7e5e4] rounded-lg text-[#1c1917] placeholder:text-[#a8a29e] focus:outline-none focus:ring-2 focus:ring-[#5e6fe5] focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-bold text-[#1c1917] mb-2">
-                Email Address
+                Email Address <span className="text-[#ec3750]">*</span>
               </label>
               <input
                 type="email"
@@ -177,14 +182,15 @@ export default function EventRSVPPage({ params }: { params: Promise<{ eventId: s
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                placeholder="john.doe@example.com"
                 required
-                className="w-full px-4 py-3 border border-[#e7e5e4] rounded-lg text-[#1c1917] focus:outline-none focus:ring-2 focus:ring-[#ec3750]"
+                className="w-full px-4 py-3 border-2 border-[#e7e5e4] rounded-lg text-[#1c1917] placeholder:text-[#a8a29e] focus:outline-none focus:ring-2 focus:ring-[#5e6fe5] focus:border-transparent transition-all"
               />
             </div>
 
             <div>
               <label htmlFor="phone" className="block text-sm font-bold text-[#1c1917] mb-2">
-                Phone Number
+                Phone Number <span className="text-[#ec3750]">*</span>
               </label>
               <input
                 type="tel"
@@ -192,15 +198,16 @@ export default function EventRSVPPage({ params }: { params: Promise<{ eventId: s
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
+                placeholder="9123456789"
                 required
-                className="w-full px-4 py-3 border border-[#e7e5e4] rounded-lg text-[#1c1917] focus:outline-none focus:ring-2 focus:ring-[#ec3750]"
+                className="w-full px-4 py-3 border-2 border-[#e7e5e4] rounded-lg text-[#1c1917] placeholder:text-[#a8a29e] focus:outline-none focus:ring-2 focus:ring-[#5e6fe5] focus:border-transparent transition-all"
               />
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label htmlFor="class" className="block text-sm font-bold text-[#1c1917] mb-2">
-                  Class
+                  Class <span className="text-[#ec3750]">*</span>
                 </label>
                 <input
                   type="text"
@@ -208,14 +215,15 @@ export default function EventRSVPPage({ params }: { params: Promise<{ eventId: s
                   name="class"
                   value={formData.class}
                   onChange={handleChange}
+                  placeholder="10"
                   required
-                  className="w-full px-4 py-3 border border-[#e7e5e4] rounded-lg text-[#1c1917] focus:outline-none focus:ring-2 focus:ring-[#ec3750]"
+                  className="w-full px-4 py-3 border-2 border-[#e7e5e4] rounded-lg text-[#1c1917] placeholder:text-[#a8a29e] focus:outline-none focus:ring-2 focus:ring-[#5e6fe5] focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
                 <label htmlFor="section" className="block text-sm font-bold text-[#1c1917] mb-2">
-                  Section
+                  Section <span className="text-[#ec3750]">*</span>
                 </label>
                 <input
                   type="text"
@@ -223,25 +231,30 @@ export default function EventRSVPPage({ params }: { params: Promise<{ eventId: s
                   name="section"
                   value={formData.section}
                   onChange={handleChange}
+                  placeholder="A"
                   required
-                  className="w-full px-4 py-3 border border-[#e7e5e4] rounded-lg text-[#1c1917] focus:outline-none focus:ring-2 focus:ring-[#ec3750]"
+                  className="w-full px-4 py-3 border-2 border-[#e7e5e4] rounded-lg text-[#1c1917] placeholder:text-[#a8a29e] focus:outline-none focus:ring-2 focus:ring-[#5e6fe5] focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-700 text-sm font-medium">{error}</p>
+              <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg animate-shake">
+                <p className="text-red-700 text-sm font-bold">{error}</p>
               </div>
             )}
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full px-6 py-3.5 bg-[#ec3750] text-white font-bold rounded-full hover:bg-[#d11941] hover:scale-105 active:scale-100 transition-all disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full px-6 py-4 bg-[#5e6fe5] text-white text-lg font-black rounded-full hover:bg-[#4c5bc5] hover:scale-105 active:scale-95 transition-all disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isSubmitting ? "Submitting..." : "Complete RSVP"}
             </button>
+
+            <p className="text-xs text-center text-[#57534e]">
+              You'll receive a QR code ticket via email
+            </p>
           </form>
         </div>
       </div>

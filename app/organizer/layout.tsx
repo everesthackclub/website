@@ -1,11 +1,20 @@
 "use client";
 
 import { ReactNode, Suspense } from "react";
+import { usePathname } from "next/navigation";
 import OrganizerSidebar from "@/app/components/OrganizerSidebar";
 
 export default function OrganizerLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  
+  // Don't show sidebar on login page - render children directly
+  if (pathname === "/organizer/login") {
+    return <div className="min-h-screen bg-[#fafaf9]">{children}</div>;
+  }
+
   return (
     <div className="min-h-screen bg-[#fafaf9] flex">
+      {/* Sidebar - hidden on mobile except desktop breakpoint */}
       <OrganizerSidebar />
       <Suspense fallback={
         <main className="flex-1 overflow-auto">
