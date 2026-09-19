@@ -3,6 +3,7 @@ import Link from "next/link";
 import SocialLinks from "./components/SocialLinks";
 import DraggableSticker from "./components/DraggableSticker";
 import Carousel from "./components/Carousel";
+import EventCarousel from "./components/EventCarousel";
 import { MailIcon } from "./components/icons";
 import HomeNav from "./components/HomeNav";
 import {
@@ -14,12 +15,44 @@ import {
 } from "./lib/site";
 
 const groupPhotos = [
-  '/group/group1.webp',
-  '/group/group4.jpeg',
-  '/group/group5.jpeg',
+  '/events/landing/IMG_1128.webp',
+  '/events/landing/IMG_1133.webp',
+  '/events/landing/IMG_1134.webp',
+  '/events/landing/IMG_1140.webp',
+  '/events/landing/IMG_1141.jpeg',
+  '/events/landing/IMG_1142.jpeg',
+  '/events/landing/IMG_1143.jpeg',
 ];
 
-export default function Home() {
+// Event slides data
+const eventSlides = [
+  {
+    image: '/events/past/first-weekly-workshop/IMG_1128.webp',
+    title: 'Weekly Hack Session',
+    date: 'Sept 19, 2024',
+    description: 'Our weekly meetup where members gathered to work on projects, learn new skills, and ship together.',
+  },
+  {
+    image: '/events/past/first-weekly-workshop/IMG_1133.webp',
+    title: 'Weekly Hack Session',
+    date: 'Sept 19, 2024',
+    description: 'From beginners writing their first lines of code to advanced developers building complex apps.',
+  },
+  {
+    image: '/events/past/first-weekly-workshop/IMG_1141.jpeg',
+    title: 'Weekly Hack Session',
+    date: 'Sept 19, 2024',
+    description: 'Learning together, building together, growing together.',
+  },
+  {
+    image: '/events/past/first-weekly-workshop/IMG_1142.jpeg',
+    title: 'Weekly Hack Session',
+    date: 'Sept 19, 2024',
+    description: 'Everyone learned something new and made progress on their projects.',
+  },
+];
+
+export default async function Home() {
   return (
     <div className="min-h-screen bg-grid pointer-events-none">
       {/* Cool Top Bar */}
@@ -173,6 +206,53 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Previous Event Showcase - Hardcoded */}
+      <section className="relative px-6 sm:px-12 py-20 bg-gradient-to-br from-[#f3faff] to-[#e8f3ff] overflow-hidden">
+        {/* Decorative Stickers */}
+        <div className="absolute top-8 left-8 z-10 max-md:hidden">
+          <DraggableSticker src="/stickers/classic/hack-to-the-future.png" alt="" width={110} shadow className="rotate-6" />
+        </div>
+        <div className="absolute bottom-8 right-8 z-10 max-md:hidden">
+          <DraggableSticker src="/stickers/classic/ship.png" alt="" width={100} shadow className="-rotate-6" />
+        </div>
+
+        <div className="max-w-5xl mx-auto pointer-events-auto">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-5xl sm:text-6xl font-black text-[#473b47] mb-4">
+              what we&apos;ve done
+            </h2>
+            <p className="text-xl text-[#473b47] max-w-2xl mx-auto">
+              Check out our recent hack sessions and workshops!
+            </p>
+          </div>
+
+          {/* Big Event Card */}
+          <div className="bg-white border-4 border-[#473b47] rounded-3xl overflow-hidden shadow-2xl">
+            {/* Netflix-style Carousel */}
+            <EventCarousel slides={eventSlides} />
+
+            {/* Card Content */}
+            <div className="p-8 sm:p-12">
+              <p className="text-xl text-[#473b47] leading-relaxed mb-8">
+                Our weekly meetup where members gathered to work on projects, learn new skills, and ship together. 
+                From beginners writing their first lines of code to advanced developers building complex apps — everyone learned something new.
+              </p>
+
+              {/* CTA */}
+              <div className="text-center pt-4">
+                <Link
+                  href="/events"
+                  className="inline-block px-8 py-4 bg-[#5e6fe5] text-white font-bold text-xl rounded-xl hover:bg-[#5167dd] transition-all hover:scale-105 shadow-lg"
+                >
+                  See All Events →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works Section - Ladder/Steps Style */}
       <section className="relative px-6 sm:px-12 py-20 bg-gradient-to-br from-[#c3e6f3] to-[#abc8f4]">
         {/* Stickers */}
@@ -318,6 +398,38 @@ export default function Home() {
                 </div>
               </details>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Donation Section */}
+      <section className="relative px-6 sm:px-12 py-20 bg-white pointer-events-auto">
+        <div className="max-w-4xl mx-auto pointer-events-auto">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-5xl sm:text-6xl font-black text-[#473b47] mb-4">
+              support us
+            </h2>
+            <p className="text-xl text-[#473b47] max-w-2xl mx-auto">
+              Help us continue building amazing projects and hosting workshops. Your donation goes directly to funding our events, materials, and community activities.
+            </p>
+          </div>
+
+          {/* QR Code */}
+          <div className="flex justify-center">
+            <div className="w-full max-w-md bg-gradient-to-br from-[#f3faff] to-[#e8f3ff] border-4 border-[#473b47] rounded-3xl p-8 shadow-2xl">
+              <div className="relative w-full aspect-square">
+                <Image
+                  src="/qr_fund.png"
+                  alt="Donation QR Code"
+                  fill
+                  className="object-contain rounded-2xl"
+                />
+              </div>
+              <p className="text-center text-[#473b47] font-bold mt-6">
+                Scan to donate
+              </p>
+            </div>
           </div>
         </div>
       </section>

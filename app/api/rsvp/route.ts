@@ -25,6 +25,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if event exists and form is open
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      select: { isFormOpen: true, isCompleted: true, name: true },
+    });
+
+    if (!event) {
+      return NextResponse.json(
+        { error: "Event not found" },
+        { status: 404 }
+      );
+    }
+
+    if (event.isCompleted) {
+      return NextResponse.json(
+        { error: "This event has ended", message: "Registration is no longer available for this event." },
+        { status: 403 }
+      );
+    }
+
+    if (!event.isFormOpen) {
+      return NextResponse.json(
+        { error: "Registration closed", message: "RSVP form is currently closed for this event." },
+        { status: 403 }
+      );
+    }
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {

@@ -11,6 +11,8 @@ interface Event {
   date: string;
   time: string;
   location: string;
+  isFormOpen: boolean;
+  isCompleted: boolean;
 }
 
 export default function EventRSVPPage({ params }: { params: Promise<{ eventId: string }> }) {
@@ -115,6 +117,48 @@ export default function EventRSVPPage({ params }: { params: Promise<{ eventId: s
           <h1 className="text-2xl font-bold text-[#1c1917] mb-2">Event Not Found</h1>
           <Link href="/events" className="text-[#5e6fe5] font-medium hover:text-[#5167dd]">
             ← Back to Events
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if event is completed
+  if (event.isCompleted) {
+    return (
+      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="text-6xl mb-4">🔒</div>
+          <h1 className="text-2xl font-black text-[#1c1917] mb-2">Event Has Ended</h1>
+          <p className="text-[#57534e] mb-6">
+            This event has been completed. Registration is no longer available.
+          </p>
+          <Link
+            href="/events"
+            className="inline-block px-6 py-3 bg-[#5e6fe5] text-white font-bold rounded-full hover:bg-[#5167dd]"
+          >
+            View Other Events
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if form is closed
+  if (!event.isFormOpen) {
+    return (
+      <div className="min-h-screen bg-[#fafaf9] flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="text-6xl mb-4">⏸️</div>
+          <h1 className="text-2xl font-black text-[#1c1917] mb-2">Registration Closed</h1>
+          <p className="text-[#57534e] mb-6">
+            RSVP form for this event is currently closed. Please check back later or contact the organizers.
+          </p>
+          <Link
+            href="/events"
+            className="inline-block px-6 py-3 bg-[#5e6fe5] text-white font-bold rounded-full hover:bg-[#5167dd]"
+          >
+            View Other Events
           </Link>
         </div>
       </div>

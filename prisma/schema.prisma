@@ -14,7 +14,10 @@ model Event {
   date        DateTime
   time        String
   location    String
+  imageUrl    String?    // Image for event card (manually added in code)
   isActive    Boolean    @default(true)
+  isCompleted Boolean    @default(false) // Event finished, locked for editing
+  isFormOpen  Boolean    @default(true)  // RSVP form open/closed
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   
