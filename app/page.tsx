@@ -29,25 +29,25 @@ const eventSlides = [
   {
     image: '/events/past/first-weekly-workshop/IMG_1128.webp',
     title: 'Weekly Hack Session',
-    date: 'Sept 19, 2024',
+    date: 'Sept 19, 2026',
     description: 'Our weekly meetup where members gathered to work on projects, learn new skills, and ship together.',
   },
   {
     image: '/events/past/first-weekly-workshop/IMG_1133.webp',
     title: 'Weekly Hack Session',
-    date: 'Sept 19, 2024',
+    date: 'Sept 19, 2026',
     description: 'From beginners writing their first lines of code to advanced developers building complex apps.',
   },
   {
     image: '/events/past/first-weekly-workshop/IMG_1141.jpeg',
     title: 'Weekly Hack Session',
-    date: 'Sept 19, 2024',
+    date: 'Sept 19, 2026',
     description: 'Learning together, building together, growing together.',
   },
   {
     image: '/events/past/first-weekly-workshop/IMG_1142.jpeg',
     title: 'Weekly Hack Session',
-    date: 'Sept 19, 2024',
+    date: 'Sept 19, 2026',
     description: 'Everyone learned something new and made progress on their projects.',
   },
 ];
